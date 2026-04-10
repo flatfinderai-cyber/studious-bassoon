@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlatFinder™ Beta Sign-Up</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f5;
+            color: #1a1a1a;
+        }
+
+        /* Header */
+        header {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 3px solid #f97316;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-cat {
+            font-size: 2.5rem;
+        }
+
+        .tagline {
+            font-size: 0.9rem;
+            color: #ccc;
+            margin-top: 0.5rem;
+        }
+
+        /* Progress bar */
+        .progress-container {
+            background-color: white;
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .progress-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .progress-step {
+            flex: 1;
+            text-align: center;
+        }
+
+        .progress-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin: 0 auto 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active .progress-circle {
+            background-color: #f97316;
+            color: white;
+        }
+
+        .progress-step.completed .progress-circle {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .progress-step-label {
+            font-size: 0.8rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .progress-step.active .progress-step-label {
+            color: #f97316;
+        }
+
+        .progress-connector {
+            flex: 0.5;
+            height: 2px;
+            background-color: #e0e0e0;
+        }
+
+        .progress-step.completed ~ .progress-connector {
+            background-color: #4caf50;
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Plan cards section */
+        .plans-section {
+            display: none;
+            margin-bottom: 2rem;
+        }
+
+        .plans-section.active {
+            display: block;
+        }
+
+        .plans-heading {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .plans-heading h2 {
+            font-size: 1.8rem;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .plans-heading p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .plan-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .plan-card.selected {
+            border-color: #f97316;
+            border-width: 3px;
+            box-shadow: 0 0 20px rgba(249, 115, 22, 0.3);
+        }
+
+        .plan-card.ultra {
+            position: relative;
+            background: linear-gradient(135deg, #ffffff 0%, #fffbf0 100%);
+        }
+
+        .plan-card.ultra::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.1) 0%, transparent 70%);
+            filter: blur(40px);
+            pointer-events: none;
+        }
+
+        .plan-badge {
+            display: inline-block;
+            background-color: #f97316;
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .plan-badge.free {
+            background-color: #4caf50;
+        }
+
+        .plan-badge.best-value {
+            background-color: #fbbf24;
+            color: #1a1a1a;
+        }
+
+        .plan-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .plan-subtitle {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .plan-price {
+            margin-bottom: 1.5rem;
+        }
+
+        .price-normal {
+            font-size: 0.85rem;
+            color: #999;
+            text-decoration: line-through;
+            margin-bottom: 0.25rem;
+        }
+
+        .price-beta {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #f97316;
+        }
+
+        .price-note {
+            font-size: 0.8rem;
+            color: #f97316;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .plan-features li {
+            padding: 0.6rem 0;
+            font-size: 0.95rem;
+            color: #333;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .plan-features li::before {
+            content: '✓';
+            color: #f97316;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .plan-features li:last-child {
+            border-bottom: none;
+        }
+
+        .plan-select-btn {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            background-color: white;
+            color: #1a1a1a;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .plan-card.selected .plan-select-btn {
+            background-color: #f97316;
+            color: white;
+            border-color: #f97316;
+        }
+
+        /* Form sections */
+        .form-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .form-section h2 {
+            font-size: 1.5rem;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-section-subtitle {
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #1a1a1a;
+            font-size: 0.95rem;
+        }
+
+        .form-group.required label::after {
+            content: ' *';
+            color: #f97316;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #f97316;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+        }
+
+        .form-group.error input,
+        .form-group.error select {
+            border-color: #f97316;
+            background-color: #fff5f0;
+        }
+
+        .form-note {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.4rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .radio-group,
+        .checkbox-group {
+            margin-top: 0.75rem;
+        }
+
+        .radio-option,
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .radio-option input[type="radio"],
+        .checkbox-option input[type="checkbox"] {
+            width: auto;
+            margin-right: 0.5rem;
+            cursor: pointer;
+            accent-color: #f97316;
+        }
+
+        .radio-option label,
+        .checkbox-option label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 400;
+        }
+
+        .currency-input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .currency-input-group select {
+            flex: 0 0 100px;
+        }
+
+        .currency-input-group input {
+            flex: 1;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .modal-close:hover {
+            color: #1a1a1a;
+        }
+
+        .modal h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+        }
+
+        .modal p {
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .modal ul,
+        .modal ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .modal li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        /* Navigation buttons */
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary {
+            background-color: #f97316;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background-color: #ea7e1f;
+        }
+
+        .btn-primary:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background-color: #e0e0e0;
+            color: #1a1a1a;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d0d0d0;
+        }
+
+        .btn-link {
+            background: none;
+            border: none;
+            color: #f97316;
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: 500;
+            padding: 0;
+        }
+
+        .btn-link:hover {
+            color: #ea7e1f;
+        }
+
+        /* Success screen */
+        .success-screen {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .success-screen.active {
+            display: block;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: bounce 0.6s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .success-message {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .success-detail {
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .success-email {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            font-family: monospace;
+            color: #1a1a1a;
+            font-size: 0.9rem;
+        }
+
+        .confetti {
+            position: fixed;
+            pointer-events: none;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1a1a1a;
+            color: #999;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        footer p {
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .plans-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .progress-bar {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .progress-connector {
+                display: none;
+            }
+
+            .progress-step {
+                flex: 0 0 calc(33.333% - 0.4rem);
+            }
+
+            .container {
+                margin: 1rem auto;
+                padding: 0 1rem;
+            }
+
+            .form-section {
+                padding: 1.5rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-cat">🐱</span>
+                <span>FlatFinder™</span>
+            </div>
+            <p class="tagline">Canadian Kind, Scottish Strong</p>
+        </div>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div class="progress-step completed" id="progressStep1">
+                <div class="progress-circle">1</div>
+                <div class="progress-step-label">Plans</div>
+            </div>
+            <div class="progress-connector"></div>
+            <div class="progress-step" id="progressStep2">
+                <div class="progress-circle">2</div>
+                <div class="progress-step-label">Search</div>
+            </div>
+            <div class="progress-connector"></div>
+            <div class="progress-step" id="progressStep3">
+                <div class="progress-circle">3</div>
+                <div class="progress-step-label">About You</div>
+            </div>
+            <div class="progress-connector"></div>
+            <div class="progress-step" id="progressStep4">
+                <div class="progress-circle">4</div>
+                <div class="progress-step-label">Confirm</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Form -->
+    <div class="container">
+        <!-- Plans Section -->
+        <section class="plans-section active" id="plansSection">
+            <div class="plans-heading">
+                <h2>Choose Your Plan</h2>
+                <p>Pick the plan that works for you. Upgrade anytime.</p>
+            </div>
+
+            <form id="signupForm">
+                <div class="plans-grid">
+                    <!-- Pro Plan -->
+                    <div class="plan-card" data-plan="pro">
+                        <span class="plan-badge free">FREE during beta!</span>
+                        <h3 class="plan-title">Pro Plan</h3>
+                        <p class="plan-subtitle">The Essential</p>
+                        <div class="plan-price">
+                            <div class="price-normal">$29 CAD/mo normally</div>
+                            <div class="price-beta">FREE</div>
+                        </div>
+                        <ul class="plan-features">
+                            <li>Listing search with affordability filtering</li>
+                            <li>Benny AI chat assistant</li>
+                            <li>Compliance badges on agents</li>
+                            <li>Basic demand letter (1/month)</li>
+                        </ul>
+                        <button type="button" class="plan-select-btn">Select Plan</button>
+                    </div>
+
+                    <!-- Max Plan -->
+                    <div class="plan-card" data-plan="max">
+                        <span class="plan-badge">50% off — beta deal</span>
+                        <h3 class="plan-title">Max Plan</h3>
+                        <p class="plan-subtitle">The Advocate</p>
+                        <div class="plan-price">
+                            <div class="price-normal">$79 CAD/mo normally</div>
+                            <div class="price-beta">$39.50 CAD/mo</div>
+                        </div>
+                        <ul class="plan-features">
+                            <li>Everything in Pro +</li>
+                            <li>Unlimited demand letters</li>
+                            <li>Agent report submissions</li>
+                            <li>City-specific legal templates</li>
+                            <li>Priority Benny responses</li>
+                        </ul>
+                        <button type="button" class="plan-select-btn">Select Plan</button>
+                    </div>
+
+                    <!-- Ultra Plan -->
+                    <div class="plan-card ultra" data-plan="ultra">
+                        <span class="plan-badge best-value">⭐ Best Value</span>
+                        <span class="plan-badge">50% off — and it's a damn good deal</span>
+                        <h3 class="plan-title">Ultra Plan</h3>
+                        <p class="plan-subtitle">The Full Armour</p>
+                        <div class="plan-price">
+                            <div class="price-normal">$149 CAD/mo normally</div>
+                            <div class="price-beta">$74.50 CAD/mo</div>
+                        </div>
+                        <ul class="plan-features">
+                            <li>Everything in Max +</li>
+                            <li>Triple-checked apartment finding</li>
+                            <li>Personal apartment scout</li>
+                            <li>Dedicated compliance review</li>
+                            <li>Pre-move-in inspection checklist</li>
+                            <li>Direct escalation support</li>
+                        </ul>
+                        <button type="button" class="plan-select-btn">Select Plan</button>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-primary" id="nextBtn1">
+                        Continue to Your Search
+                    </button>
+                </div>
+
+                <!-- Step 1: Your Search -->
+                <section class="form-section" id="step1">
+                    <h2>Step 1: Your Search</h2>
+                    <p class="form-section-subtitle">Tell us where you're looking and what you need.</p>
+
+                    <div class="form-row">
+                        <div class="form-group required">
+                            <label for="city">What city are you looking in?</label>
+                            <input type="text" id="city" name="city" placeholder="e.g., Toronto, London" required>
+                        </div>
+
+                        <div class="form-group required">
+                            <label for="country">Country</label>
+                            <select id="country" name="country" required>
+                                <option value="">Select a country</option>
+                                <option value="Canada">Canada</option>
+                                <option value="United Kingdom">United Kingdom</option>
+                                <option value="France">France</option>
+                                <option value="Germany">Germany</option>
+                                <option value="Spain">Spain</option>
+                                <option value="Netherlands">Netherlands</option>
+                                <option value="Belgium">Belgium</option>
+                                <option value="Switzerland">Switzerland</option>
+                            </select>
+                            <p class="form-note">FlatFinder™ currently operates in Canada, UK, France, and select European cities.</p>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="province">State or Province (optional)</label>
+                            <input type="text" id="province" name="province" placeholder="e.g., Ontario, CA">
+                        </div>
+
+                        <div class="form-group required">
+                            <label for="bedrooms">How many bedrooms?</label>
+                            <select id="bedrooms" name="bedrooms" required>
+                                <option value="">Select bedrooms</option>
+                                <option value="studio">Studio</option>
+                                <option value="1">1 Bedroom</option>
+                                <option value="2">2 Bedrooms</option>
+                                <option value="3">3 Bedrooms</option>
+                                <option value="4+">4+ Bedrooms</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group required">
+                            <label for="budget">Monthly apartment budget</label>
+                            <div class="currency-input-group">
+                                <select id="currency" name="currency" required>
+                                    <option value="CAD">CAD</option>
+                                    <option value="GBP">GBP</option>
+                                    <option value="EUR">EUR</option>
+                                </select>
+                                <input type="number" id="budget" name="budget" placeholder="e.g., 1500" min="0" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group required">
+                            <label for="people">How many people are moving in?</label>
+                            <input type="number" id="people" name="people" min="1" placeholder="1" value="1" required>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="backBtn1">Back</button>
+                        <button type="button" class="btn btn-primary" id="nextBtn2">Continue</button>
+                    </div>
+                </section>
+
+                <!-- Step 2: About You -->
+                <section class="form-section" id="step2">
+                    <h2>Step 2: About You</h2>
+                    <p class="form-section-subtitle">Help us understand your situation better.</p>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="income">Annual income (optional)</label>
+                            <input type="number" id="income" name="income" placeholder="e.g., 45000" min="0">
+                            <p class="form-note">Used only to calculate your affordability range. Never shared.</p>
+                        </div>
+
+                        <div class="form-group required">
+                            <label for="budgetRange">Budget for plan fees?</label>
+                            <select id="budgetRange" name="budgetRange" required>
+                                <option value="">Select budget</option>
+                                <option value="free-only">Free only</option>
+                                <option value="under-50">Under $50/mo</option>
+                                <option value="50-100">$50–$100/mo</option>
+                                <option value="100-200">$100–$200/mo</option>
+                                <option value="no-limit">No limit</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group required">
+                            <label for="occupation">Occupation / Job title</label>
+                            <input type="text" id="occupation" name="occupation" placeholder="e.g., Software Engineer" required>
+                        </div>
+
+                        <div class="form-group required">
+                            <label for="employment">Employment status</label>
+                            <select id="employment" name="employment" required>
+                                <option value="">Select status</option>
+                                <option value="employed-full-time">Employed full-time</option>
+                                <option value="employed-part-time">Employed part-time</option>
+                                <option value="self-employed">Self-employed/freelance</option>
+                                <option value="student">Student</option>
+                                <option value="between-jobs">Between jobs</option>
+                                <option value="retired">Retired</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group required">
+                        <label>How urgent is your search?</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="urgency1" name="urgency" value="immediately" required>
+                                <label for="urgency1">Immediately (within 2 weeks)</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="urgency2" name="urgency" value="1-3-months">
+                                <label for="urgency2">1–3 months</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="urgency3" name="urgency" value="3-6-months">
+                                <label for="urgency3">3–6 months</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="urgency4" name="urgency" value="exploring">
+                                <label for="urgency4">Just exploring</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group required">
+                        <label>Have you been denied a rental due to income screening?</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="denied1" name="denied" value="yes" required>
+                                <label for="denied1">Yes</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="denied2" name="denied" value="no">
+                                <label for="denied2">No</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="denied3" name="denied" value="prefer-not">
+                                <label for="denied3">Prefer not to say</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group required">
+                        <label>Have you dealt with a predatory landlord or agent?</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="predatory1" name="predatory" value="yes" required>
+                                <label for="predatory1">Yes</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="predatory2" name="predatory" value="no">
+                                <label for="predatory2">No</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group required">
+                        <label for="source">How did you hear about FlatFinder™?</label>
+                        <select id="source" name="source" required>
+                            <option value="">Select source</option>
+                            <option value="social-media">Social media</option>
+                            <option value="word-of-mouth">Word of mouth</option>
+                            <option value="news">News article</option>
+                            <option value="google">Google search</option>
+                            <option value="referred">Referred by someone</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="backBtn2">Back</button>
+                        <button type="button" class="btn btn-primary" id="nextBtn3">Continue</button>
+                    </div>
+                </section>
+
+                <!-- Step 3: Confirm & Agree -->
+                <section class="form-section" id="step3">
+                    <h2>Step 3: Confirm & Agree</h2>
+                    <p class="form-section-subtitle">Almost there! Just a few final details.</p>
+
+                    <div class="form-row">
+                        <div class="form-group required">
+                            <label for="email">Email address</label>
+                            <input type="email" id="email" name="email" placeholder="you@example.com" required>
+                        </div>
+
+                        <div class="form-group required">
+                            <label for="name">Full name</label>
+                            <input type="text" id="name" name="name" placeholder="Your name" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="termsCheckbox" name="terms" required>
+                            <label for="termsCheckbox">
+                                I agree to the
+                                <button type="button" class="btn-link" id="termsLink">FlatFinder™ Beta Terms & Conditions</button>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="privacyCheckbox" name="privacy" required>
+                            <label for="privacyCheckbox">
+                                I agree to the
+                                <button type="button" class="btn-link" id="privacyLink">Privacy Policy</button>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="cookiesCheckbox" name="cookies">
+                            <label for="cookiesCheckbox">
+                                I consent to cookies for analytics
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="updatesCheckbox" name="updates" checked>
+                            <label for="updatesCheckbox">
+                                I'd like to receive updates about FlatFinder™ launches
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="backBtn3">Back</button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Complete Sign-Up</button>
+                    </div>
+                </section>
+            </form>
+        </section>
+
+        <!-- Success Screen -->
+        <div class="success-screen" id="successScreen">
+            <div class="success-icon">🐱</div>
+            <div class="success-message">Benny's got you. You're on the list.</div>
+            <div class="success-detail">
+                A confirmation email is on its way to your inbox.
+            </div>
+            <div class="success-email" id="confirmEmail">you@example.com</div>
+            <p class="success-detail">
+                Keep an eye on your inbox for early access to FlatFinder™. In the meantime, feel free to follow us on social media.
+            </p>
+            <button type="button" class="btn btn-primary" onclick="location.reload()">Sign Up Another</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>© 2024–2026 Lila Alexandra Olufemi Inglis Abegunrin. All Rights Reserved.<br>
+            FlatFinder™: Housing Revolutionised™ | Canadian Kind, Scottish Strong</p>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <!-- Terms & Conditions Modal -->
+    <div class="modal" id="termsModal">
+        <div class="modal-content">
+            <button type="button" class="modal-close" onclick="closeModal('termsModal')">&times;</button>
+            <h3>FlatFinder™ Beta Terms & Conditions</h3>
+
+            <p><strong>1. Beta Service</strong></p>
+            <p>FlatFinder™ is provided as-is during beta. We make no guarantees regarding apartment finding success or listing accuracy.</p>
+
+            <p><strong>2. Data Usage</strong></p>
+            <p>Your data is used solely to:</p>
+            <ul>
+                <li>Match you with relevant listings</li>
+                <li>Improve Benny AI responses</li>
+                <li>Conduct internal platform testing</li>
+            </ul>
+
+            <p><strong>3. Anonymized Feedback</strong></p>
+            <p>You grant FlatFinder™ the right to use your anonymized feedback to improve the platform and services.</p>
+
+            <p><strong>4. Beta Access Revocation</strong></p>
+            <p>Beta access may be revoked if terms are violated.</p>
+
+            <p><strong>5. Liability</strong></p>
+            <p>FlatFinder™ has no financial liability for listing accuracy or unsuccessful apartment searches during beta.</p>
+
+            <p><strong>6. Governing Law</strong></p>
+            <p>These terms are governed by Canadian law (Province of Ontario).</p>
+
+            <p><strong>© 2024–2026 Lila Alexandra Olufemi Inglis Abegunrin. All Rights Reserved.</strong></p>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div class="modal" id="privacyModal">
+        <div class="modal-content">
+            <button type="button" class="modal-close" onclick="closeModal('privacyModal')">&times;</button>
+            <h3>Privacy Policy</h3>
+
+            <p><strong>What Data We Collect</strong></p>
+            <ul>
+                <li>Name and email address</li>
+                <li>Income range (optional)</li>
+                <li>Occupation and employment status</li>
+                <li>City and search preferences</li>
+            </ul>
+
+            <p><strong>What We DON'T Collect</strong></p>
+            <ul>
+                <li>Social Insurance Numbers (SIN)</li>
+                <li>Passport or ID numbers</li>
+                <li>Full financial records</li>
+            </ul>
+
+            <p><strong>How We Use Your Data</strong></p>
+            <ul>
+                <li>Match you to relevant listings</li>
+                <li>Improve Benny AI responses</li>
+                <li>Internal testing and platform improvement</li>
+            </ul>
+
+            <p><strong>Data Security & Storage</strong></p>
+            <p>Your data is stored securely in Canada (Supabase, ca-central-1 region).</p>
+
+            <p><strong>We Never Sell Your Data</strong></p>
+            <p>Ever.</p>
+
+            <p><strong>Your Rights</strong></p>
+            <p>You can request data deletion at any time: <strong>privacy@flatfinder.io</strong></p>
+
+            <p><strong>Compliance</strong></p>
+            <ul>
+                <li>PIPEDA (Personal Information Protection and Electronic Documents Act) compliant</li>
+                <li>GDPR-adjacent practices for UK/EU users</li>
+            </ul>
+
+            <p><strong>Cookies</strong></p>
+            <ul>
+                <li>Session cookies for core functionality</li>
+                <li>Optional analytics cookies via Plausible (privacy-first, no fingerprinting)</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        let currentStep = 0;
+        let selectedPlan = null;
+        const steps = ['plans', 'step1', 'step2', 'step3'];
+
+        // Plan selection
+        document.querySelectorAll('.plan-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                selectedPlan = card.dataset.plan;
+            });
+        });
+
+        document.querySelectorAll('.plan-select-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const card = e.target.closest('.plan-card');
+                document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                selectedPlan = card.dataset.plan;
+            });
+        });
+
+        // Navigation
+        document.getElementById('nextBtn1').addEventListener('click', () => {
+            if (!selectedPlan) {
+                alert('Please select a plan to continue.');
+                return;
+            }
+            goToStep(1);
+        });
+
+        document.getElementById('nextBtn2').addEventListener('click', () => {
+            if (validateStep(1)) {
+                goToStep(2);
+            }
+        });
+
+        document.getElementById('nextBtn3').addEventListener('click', () => {
+            if (validateStep(2)) {
+                goToStep(3);
+            }
+        });
+
+        document.getElementById('backBtn1').addEventListener('click', () => goToStep(0));
+        document.getElementById('backBtn2').addEventListener('click', () => goToStep(1));
+        document.getElementById('backBtn3').addEventListener('click', () => goToStep(2));
+
+        // Form submission
+        // ─────────────────────────────────────────────────────
+        // PLAN B (Active): Formspree — no backend required
+        // Sign up free at formspree.io → create a form →
+        // replace YOUR_FORMSPREE_ID below with your form ID
+        // e.g. if your endpoint is formspree.io/f/abcdefgh
+        //      set FORMSPREE_ID = 'abcdefgh'
+        // ─────────────────────────────────────────────────────
+        const FORMSPREE_ID = 'YOUR_FORMSPREE_ID'; // ← REPLACE THIS
+
+        // ─────────────────────────────────────────────────────
+        // PLAN A (Commented out): Supabase
+        // Uncomment and fill in your credentials to use instead
+        // ─────────────────────────────────────────────────────
+        // const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
+        // const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!validateStep(3)) return;
+
+            const submitBtn = document.getElementById('submitBtn');
+            const email = document.getElementById('email').value;
+
+            // Collect all form data
+            const payload = {
+                email: email,
+                plan: selectedPlan || 'pro',
+                city: document.getElementById('city')?.value || '',
+                bedrooms: document.getElementById('bedrooms')?.value || '',
+                currency: document.getElementById('currency')?.value || 'CAD',
+                budget: document.getElementById('budget')?.value || '',
+                income: document.getElementById('income')?.value || '',
+                employment: document.getElementById('employment')?.value || '',
+                predatory_landlord: document.querySelector('input[name="predatory"]:checked')?.value || '',
+                source: 'beta-signup',
+                timestamp: new Date().toISOString()
+            };
+
+            // Disable button while submitting
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting…';
+
+            try {
+                // ── PLAN B: Formspree ──────────────────────────
+                if (FORMSPREE_ID && FORMSPREE_ID !== 'YOUR_FORMSPREE_ID') {
+                    const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!res.ok) throw new Error('Formspree error: ' + res.status);
+                }
+
+                // ── PLAN A: Supabase (uncomment to use) ──────────
+                // const res = await fetch(`${SUPABASE_URL}/rest/v1/beta_signups`, {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/json',
+                //         'apikey': SUPABASE_ANON_KEY,
+                //         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                //         'Prefer': 'return=minimal'
+                //     },
+                //     body: JSON.stringify(payload)
+                // });
+                // if (!res.ok) throw new Error('Supabase error: ' + res.status);
+
+                // ── Success ───────────────────────────────────────
+                document.getElementById('confirmEmail').textContent = email;
+                showSuccessScreen();
+                createConfetti();
+
+            } catch (err) {
+                console.error('Submission error:', err);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Complete Sign-Up';
+                // If no backend is configured yet, show success anyway (dev mode)
+                if (FORMSPREE_ID === 'YOUR_FORMSPREE_ID') {
+                    document.getElementById('confirmEmail').textContent = email;
+                    showSuccessScreen();
+                    createConfetti();
+                    console.warn('Dev mode: no Formspree ID set — form not actually submitted');
+                } else {
+                    alert('Something went wrong. Please try again or email flat@flatfinder.io');
+                }
+            }
+        });
+
+        // Modal controls
+        document.getElementById('termsLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal('termsModal');
+        });
+
+        document.getElementById('privacyLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal('privacyModal');
+        });
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Close modal on background click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+
+        // Step navigation
+        function goToStep(step) {
+            currentStep = step;
+            updateProgress();
+            updateVisibility();
+            window.scrollTo(0, 0);
+        }
+
+        function updateProgress() {
+            document.querySelectorAll('[id^="progressStep"]').forEach((el, idx) => {
+                el.classList.remove('active', 'completed');
+                if (idx < currentStep) {
+                    el.classList.add('completed');
+                } else if (idx === currentStep) {
+                    el.classList.add('active');
+                }
+            });
+        }
+
+        function updateVisibility() {
+            document.getElementById('plansSection').classList.toggle('active', currentStep === 0);
+            document.getElementById('step1').classList.toggle('active', currentStep === 1);
+            document.getElementById('step2').classList.toggle('active', currentStep === 2);
+            document.getElementById('step3').classList.toggle('active', currentStep === 3);
+        }
+
+        // Validation
+        function validateStep(step) {
+            const requiredFields = document.querySelectorAll(`#step${step} input[required], #step${step} select[required], #step${step} textarea[required]`);
+            let isValid = true;
+
+            requiredFields.forEach(field => {
+                if (!field.value.trim() && field.type !== 'radio') {
+                    field.closest('.form-group').classList.add('error');
+                    isValid = false;
+                } else if (field.type === 'radio') {
+                    const group = document.querySelectorAll(`input[name="${field.name}"]`);
+                    const isChecked = Array.from(group).some(r => r.checked);
+                    if (!isChecked) {
+                        group[0].closest('.form-group').classList.add('error');
+                        isValid = false;
+                    }
+                } else {
+                    field.closest('.form-group').classList.remove('error');
+                }
+            });
+
+            // Validate checkboxes for step 3
+            if (step === 3) {
+                const termsCheckbox = document.getElementById('termsCheckbox');
+                const privacyCheckbox = document.getElementById('privacyCheckbox');
+
+                if (!termsCheckbox.checked || !privacyCheckbox.checked) {
+                    if (!termsCheckbox.checked) {
+                        termsCheckbox.closest('.form-group').classList.add('error');
+                    }
+                    if (!privacyCheckbox.checked) {
+                        privacyCheckbox.closest('.form-group').classList.add('error');
+                    }
+                    isValid = false;
+                }
+            }
+
+            return isValid;
+        }
+
+        // Success screen
+        function showSuccessScreen() {
+            document.getElementById('plansSection').style.display = 'none';
+            document.getElementById('successScreen').classList.add('active');
+        }
+
+        // Confetti effect
+        function createConfetti() {
+            const colors = ['#f97316', '#fbbf24', '#4caf50', '#3b82f6'];
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = Math.random() * 8 + 4 + 'px';
+                confetti.style.height = confetti.style.width;
+                confetti.style.borderRadius = '50%';
+                confetti.style.animation = `fall ${Math.random() * 2 + 2}s linear`;
+                document.body.appendChild(confetti);
+
+                setTimeout(() => confetti.remove(), 4000);
+            }
+        }
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fall {
+                to {
+                    transform: translateY(100vh) rotateZ(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Clear errors on input
+        document.querySelectorAll('input, select, textarea').forEach(field => {
+            field.addEventListener('change', () => {
+                field.closest('.form-group').classList.remove('error');
+            });
+        });
+
+        // Initialize progress
+        updateProgress();
+        updateVisibility();
+    </script>
+</body>
+</html>
