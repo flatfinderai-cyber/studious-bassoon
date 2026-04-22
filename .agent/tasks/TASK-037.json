@@ -1,0 +1,37 @@
+{
+  "id": "TASK-037",
+  "title": "Install and configure Web3Modal v3 (WalletConnect v2)",
+  "category": "integration",
+  "description": "Add Web3Modal v3 to the project and configure it with the WalletConnect Project ID. This provides the wallet connection UI (QR code modal, injected wallet support).",
+  "dependencies": [],
+  "complexity": "medium",
+  "acceptance_criteria": [
+    "Web3Modal v3 is loaded (CDN import or bundled)",
+    "WalletConnect Project ID is set from an environment variable or config constant",
+    "A createWeb3Modal() call is present in a shared wallet-client.js module",
+    "Supported wallets include MetaMask and WalletConnect QR",
+    "The modal opens when open() is called (verified visually)"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Obtain WalletConnect Project ID",
+      "details": "Go to cloud.walletconnect.com → Create a new project → copy the Project ID.",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Create wallet-client.js",
+      "details": "import { createWeb3Modal, defaultWagmiConfig } from 'https://esm.sh/@web3modal/wagmi@4';\nimport { mainnet } from 'https://esm.sh/viem@1/chains';\n\nconst projectId = 'YOUR_WALLETCONNECT_PROJECT_ID';\nconst metadata = { name: 'FlatFinder', description: 'Find your next flat', url: window.location.origin, icons: ['/icons/logo.png'] };\nconst chains = [mainnet];\nconst config = defaultWagmiConfig({ chains, projectId, metadata });\nexport const modal = createWeb3Modal({ wagmiConfig: config, projectId, chains });",
+      "passes": false
+    },
+    {
+      "number": 3,
+      "description": "Verify modal opens",
+      "details": "Import wallet-client.js in the browser console: import { modal } from './wallet-client.js'; modal.open(); — confirm the Web3Modal UI appears.",
+      "passes": false
+    }
+  ],
+  "technical_notes": "Web3Modal v3 + wagmi is the recommended pattern for WalletConnect v2. For a pure vanilla JS (no bundler) project, the ESM CDN import works but may have cold-load latency — acceptable for MVP.",
+  "passes": false
+}

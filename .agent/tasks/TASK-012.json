@@ -1,0 +1,35 @@
+{
+  "id": "TASK-012",
+  "title": "Add 'Sign up without a password' button to /signup",
+  "category": "ui-ux",
+  "description": "Add a secondary magic link sign-up option below the password form with a divider and a separate email field.",
+  "dependencies": ["TASK-011"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "A visible divider ('or') separates the password form from the magic link section",
+    "A button or link reads 'Sign up without a password'",
+    "Clicking it shows a small inline email input and a 'Send link' button (the password form remains visible but the magic link section becomes the active focus)",
+    "Button has id='magic-link-btn' for JS targeting"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Add divider HTML",
+      "details": "<div class='divider'><span>or</span></div> — style with CSS: flex, 1px lines either side of the 'or' text.",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Add magic link section",
+      "details": "<div id='magic-link-section'>\n  <button type='button' id='magic-link-btn'>Sign up without a password</button>\n  <div id='magic-link-form' hidden>\n    <input type='email' id='magic-email' placeholder='your@email.com'>\n    <button type='button' id='send-magic-link'>Send link</button>\n  </div>\n</div>",
+      "passes": false
+    },
+    {
+      "number": 3,
+      "description": "Add toggle JS",
+      "details": "document.getElementById('magic-link-btn').addEventListener('click', () => { document.getElementById('magic-link-form').hidden = false; }); — JS logic for actually sending the link is in TASK-016.",
+      "passes": false
+    }
+  ],
+  "passes": false
+}

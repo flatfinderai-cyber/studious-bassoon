@@ -1,0 +1,32 @@
+{
+  "id": "TASK-029",
+  "title": "Create /onboarding/tenant step 2 (budget, date, bedrooms)",
+  "category": "ui-ux",
+  "description": "Create step 2 of tenant onboarding — budget range, move-in date, and bedroom count.",
+  "dependencies": ["TASK-028"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "Page heading: 'Tell us what you need'",
+    "Budget: two number inputs (Min £ / Max £) or a dual-handle range slider",
+    "Move-in date: a date input (type=date), label 'Earliest move-in'",
+    "Bedrooms: a select or button group (Studio, 1, 2, 3, 4+)",
+    "A 'Finish setup' button is always enabled (all fields optional at this step)",
+    "Progress indicator shows Step 2 of 2"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Create onboarding-tenant-2.html",
+      "details": "<label>Min budget (£/month)<input type='number' id='min-budget' min='0' step='50'></label>\n<label>Max budget (£/month)<input type='number' id='max-budget' min='0' step='50'></label>\n<label>Earliest move-in<input type='date' id='move-in-date'></label>\n<div id='bedroom-btns'>\n  <button class='bedroom-btn' data-val='0'>Studio</button>\n  <button class='bedroom-btn' data-val='1'>1</button>\n  <button class='bedroom-btn' data-val='2'>2</button>\n  <button class='bedroom-btn' data-val='3'>3</button>\n  <button class='bedroom-btn' data-val='4'>4+</button>\n</div>\n<button id='finish-btn'>Finish setup</button>",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Bedroom toggle JS",
+      "details": "let selectedBedrooms = null;\ndocument.querySelectorAll('.bedroom-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.bedroom-btn').forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); selectedBedrooms = parseInt(btn.dataset.val); }); });",
+      "passes": false
+    }
+  ],
+  "technical_notes": "Finish button click handler and Supabase write are in TASK-033.",
+  "passes": false
+}

@@ -1,0 +1,38 @@
+{
+  "id": "TASK-028",
+  "title": "Create /onboarding/tenant step 1 (location preferences)",
+  "category": "ui-ux",
+  "description": "Create the first step of tenant onboarding — a page where tenants enter the areas they're looking to rent in.",
+  "dependencies": ["TASK-010"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "Page heading: 'Where are you looking?'",
+    "A text input for adding locations (city or area name)",
+    "An 'Add' button that appends the entered location as a tag/chip below the input",
+    "Tags are removable with an ✕ button",
+    "A 'Next' button navigates to /onboarding/tenant-step-2 (or step 2 on the same page)",
+    "At least one location is required before 'Next' is enabled",
+    "Progress indicator shows Step 1 of 2"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Create onboarding-tenant-1.html",
+      "details": "<input type='text' id='location-input' placeholder='e.g. Hackney, London'>\n<button id='add-location'>Add</button>\n<div id='location-tags'></div>\n<button id='next-btn' disabled>Next →</button>",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Implement tag add/remove",
+      "details": "const tags = [];\ndocument.getElementById('add-location').addEventListener('click', () => { const val = locationInput.value.trim(); if (!val) return; tags.push(val); renderTags(); locationInput.value = ''; nextBtn.disabled = false; });\nfunction renderTags() { tagsDiv.innerHTML = tags.map((t, i) => '<span class=\"tag\">' + t + '<button onclick=\"removeTag(' + i + ')\">✕</button></span>').join(''); }\nfunction removeTag(i) { tags.splice(i, 1); renderTags(); nextBtn.disabled = tags.length === 0; }",
+      "passes": false
+    },
+    {
+      "number": 3,
+      "description": "Store in sessionStorage for step 2",
+      "details": "On Next click: sessionStorage.setItem('onboarding_locations', JSON.stringify(tags)); window.location.href = '/onboarding/tenant-step-2';",
+      "passes": false
+    }
+  ],
+  "passes": false
+}

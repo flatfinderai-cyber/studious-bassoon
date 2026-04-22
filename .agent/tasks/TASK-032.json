@@ -1,0 +1,23 @@
+{
+  "id": "TASK-032",
+  "title": "Implement tenant step 1 save (preferred_locations)",
+  "category": "functional",
+  "description": "On the Next button of tenant onboarding step 1, persist preferred_locations to sessionStorage and navigate to step 2.",
+  "dependencies": ["TASK-028"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "Clicking Next saves the tags array to sessionStorage key 'onboarding_locations'",
+    "Navigates to /onboarding/tenant-step-2",
+    "If tags array is empty, Next button remains disabled"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Wire Next button",
+      "details": "document.getElementById('next-btn').addEventListener('click', () => { sessionStorage.setItem('onboarding_locations', JSON.stringify(tags)); window.location.href = '/onboarding/tenant-step-2'; });",
+      "passes": false
+    }
+  ],
+  "technical_notes": "Location data is saved to Supabase in TASK-033 rather than step-by-step, to avoid partial writes that could leave the preferences table in an incomplete state.",
+  "passes": false
+}

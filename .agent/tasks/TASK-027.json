@@ -1,0 +1,40 @@
+{
+  "id": "TASK-027",
+  "title": "Create /onboarding/role page (two role cards)",
+  "category": "ui-ux",
+  "description": "Create onboarding-role.html. This is the first page after email verification. The user selects whether they are a tenant or a landlord.",
+  "dependencies": ["TASK-010"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "onboarding-role.html exists (or /onboarding/role.html)",
+    "Page heading: 'What brings you to FlatFinder?'",
+    "Two clickable cards side by side (stack on mobile):",
+    "  Card 1: icon + 'I'm looking for a flat' + short description",
+    "  Card 2: icon + 'I'm listing a property' + short description",
+    "Cards highlight with a border on hover/focus",
+    "Selected card shows a checkmark or filled border",
+    "A 'Continue' button is initially disabled and enables after a card is selected"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Create page HTML",
+      "details": "<div class='role-cards'>\n  <button class='role-card' data-role='tenant'>\n    🔍 <strong>I'm looking for a flat</strong>\n    <p>Browse verified listings in your area</p>\n  </button>\n  <button class='role-card' data-role='landlord'>\n    🏠 <strong>I'm listing a property</strong>\n    <p>Reach quality tenants faster</p>\n  </button>\n</div>\n<button id='continue-btn' disabled>Continue</button>",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Add card selection JS",
+      "details": "let selectedRole = null;\ndocument.querySelectorAll('.role-card').forEach(card => {\n  card.addEventListener('click', () => {\n    document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));\n    card.classList.add('selected');\n    selectedRole = card.dataset.role;\n    document.getElementById('continue-btn').disabled = false;\n  });\n});",
+      "passes": false
+    },
+    {
+      "number": 3,
+      "description": "Style selected state",
+      "details": ".role-card.selected { border: 2px solid var(--brand-color); background: var(--brand-light); }",
+      "passes": false
+    }
+  ],
+  "technical_notes": "The Continue button click handler is in TASK-031.",
+  "passes": false
+}

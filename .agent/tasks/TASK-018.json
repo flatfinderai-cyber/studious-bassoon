@@ -1,0 +1,24 @@
+{
+  "id": "TASK-018",
+  "title": "Add post-callback redirect logic (onboarding vs dashboard)",
+  "category": "functional",
+  "description": "After a successful auth callback, check profiles.onboarding_complete to decide where to send the user: new users go to /onboarding/role, returning users go to their role-appropriate dashboard.",
+  "dependencies": ["TASK-017", "TASK-006"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "handlePostAuth(session) fetches the user's profile from Supabase",
+    "If onboarding_complete is false or profile has no role, redirect to /onboarding/role",
+    "If role is 'tenant' and onboarding_complete is true, redirect to /search",
+    "If role is 'landlord' and onboarding_complete is true, redirect to /listings",
+    "If profile fetch fails, redirect to /onboarding/role as a safe fallback"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Write handlePostAuth function",
+      "details": "async function handlePostAuth(session) {\n  const { data: profile, error } = await supabase.from('profiles').select('role, onboarding_complete').eq('id', session.user.id).single();\n  if (error || !profile || !profile.onboarding_complete) {\n    window.location.href = '/onboarding/role';\n    return;\n  }\n  window.location.href = profile.role === 'landlord' ? '/listings' : '/search';\n}",
+      "passes": false
+    }
+  ],
+  "passes": false
+}

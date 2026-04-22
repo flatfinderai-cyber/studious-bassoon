@@ -1,0 +1,30 @@
+{
+  "id": "TASK-013",
+  "title": "Add 'Connect Wallet' button to /signup",
+  "category": "ui-ux",
+  "description": "Add a wallet connect entry point to signup.html below the magic link section. The button triggers the Web3Modal flow added in Phase 2 (TASK-038).",
+  "dependencies": ["TASK-012"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "A 'Connect Wallet' button is visible at the bottom of the signup card",
+    "Button displays the WalletConnect logo icon (SVG inline or img) alongside the label",
+    "Button has id='wallet-connect-btn'",
+    "Clicking the button in Phase 1 shows a toast: 'Wallet sign-in coming soon' (placeholder — replaced in TASK-038)"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Add wallet button HTML",
+      "details": "<button type='button' id='wallet-connect-btn' class='btn-outline'>\n  <img src='/icons/walletconnect.svg' alt='' width='20'>\n  Connect Wallet\n</button>",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Add placeholder click handler",
+      "details": "document.getElementById('wallet-connect-btn').addEventListener('click', () => { showToast('Wallet sign-in coming soon'); });",
+      "passes": false
+    }
+  ],
+  "technical_notes": "The actual Web3Modal integration is wired in TASK-038. This task only adds the UI placeholder to unblock Phase 1 development.",
+  "passes": false
+}

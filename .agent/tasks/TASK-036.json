@@ -1,0 +1,55 @@
+{
+  "id": "TASK-036",
+  "title": "Create siwe-verify Supabase Edge Function",
+  "category": "api-endpoint",
+  "description": "Write and deploy the siwe-verify Edge Function. It verifies the wallet signature, validates the nonce, creates or retrieves the Supabase user for the wallet address, and returns a session.",
+  "dependencies": ["TASK-003", "TASK-035", "TASK-004"],
+  "complexity": "high",
+  "acceptance_criteria": [
+    "Edge Function is deployed at /functions/v1/siwe-verify",
+    "Accepts POST with body { message: string, signature: string, address: string }",
+    "Verifies the signature recovers to the claimed address",
+    "Retrieves the nonce from siwe_nonces, checks it is not expired and not used",
+    "Marks the nonce as used (or deletes it)",
+    "Looks up a user with email [address]@wallet.flatfinder.app via admin API",
+    "If no user found: creates one with createUser({ email, email_confirm: true })",
+    "Generates a sign-in link for the user via generateLink({ type: 'magiclink', email })",
+    "Returns the link token so the frontend can exchange it via /auth/callback",
+    "Returns 400 for invalid signature or expired/used nonce",
+    "Returns 500 on any server error"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Create supabase/functions/siwe-verify/index.ts with imports",
+      "details": "import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';\nimport { createClient } from 'https://esm.sh/@supabase/supabase-js@2';\nimport { verifyMessage } from 'https://esm.sh/viem@1';",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Verify signature",
+      "details": "const { message, signature, address } = await req.json();\nconst recovered = await verifyMessage({ message, signature, address });\nif (!recovered) return new Response('Invalid signature', { status: 400 });",
+      "passes": false
+    },
+    {
+      "number": 3,
+      "description": "Validate nonce",
+      "details": "Extract nonce from message string (parse 'Nonce: {nonce}' line).\nconst { data: nonceRow } = await adminSupabase.from('siwe_nonces').select('*').eq('nonce', nonce).eq('address', address).single();\nif (!nonceRow || nonceRow.used || new Date(nonceRow.expires_at) < new Date()) { return new Response('Invalid or expired nonce', { status: 400 }); }\nawait adminSupabase.from('siwe_nonces').update({ used: true }).eq('nonce', nonce);",
+      "passes": false
+    },
+    {
+      "number": 4,
+      "description": "Find or create user, generate session link",
+      "details": "const walletEmail = address.toLowerCase() + '@wallet.flatfinder.app';\nconst { data: existingUser } = await adminSupabase.auth.admin.listUsers();\nconst user = existingUser.users.find(u => u.email === walletEmail);\nif (!user) { await adminSupabase.auth.admin.createUser({ email: walletEmail, email_confirm: true, user_metadata: { wallet_address: address } }); }\nconst { data: linkData } = await adminSupabase.auth.admin.generateLink({ type: 'magiclink', email: walletEmail });\nreturn new Response(JSON.stringify({ url: linkData.properties.action_link }), { headers: { 'Content-Type': 'application/json' } });",
+      "passes": false
+    },
+    {
+      "number": 5,
+      "description": "Deploy and test",
+      "details": "supabase functions deploy siwe-verify\nTest with a valid signature from MetaMask dev tools or a test script using ethers.js to sign the message from TASK-035.",
+      "passes": false
+    }
+  ],
+  "technical_notes": "listUsers() can be slow at scale — in production replace with a direct profiles lookup by wallet_address to avoid iterating all users. The action_link from generateLink is a one-time URL; the frontend navigates to it which lands on /auth/callback and establishes the session.",
+  "passes": false
+}

@@ -1,0 +1,30 @@
+{
+  "id": "TASK-040",
+  "title": "Handle wallet-authenticated session in /auth/callback",
+  "category": "functional",
+  "description": "Ensure /auth/callback correctly handles sessions established via the SIWE flow. The wallet user should receive the same post-auth routing as email users.",
+  "dependencies": ["TASK-017", "TASK-018", "TASK-039"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "A wallet user who completes SIWE and is redirected to the action_link lands on /auth/callback",
+    "The existing onAuthStateChange handler in TASK-017 picks up the SIGNED_IN event",
+    "handlePostAuth() is called and routes the wallet user correctly (onboarding or dashboard)",
+    "No special casing for wallet vs email users in the callback handler",
+    "Wallet user's profile row exists (created by on_auth_user_created trigger) with wallet_address populated"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Verify no code changes needed to auth-callback.html",
+      "details": "The callback page already handles onAuthStateChange generically. Load /auth/callback after a SIWE verify flow and confirm the session is detected and routing occurs. If the profile lacks wallet_address (because the trigger didn't set it), add a one-time update: supabase.from('profiles').update({ wallet_address: session.user.email.replace('@wallet.flatfinder.app','') }).eq('id', session.user.id)",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Test full wallet sign-in flow end to end",
+      "details": "1. Open /signup. 2. Click Connect Wallet. 3. Connect MetaMask. 4. Sign the SIWE message. 5. Confirm redirect to /onboarding/role. 6. Select role, complete onboarding. 7. Log out. 8. Open /login, Connect Wallet again. 9. Confirm redirect to /search or /listings (skipping onboarding).",
+      "passes": false
+    }
+  ],
+  "passes": false
+}

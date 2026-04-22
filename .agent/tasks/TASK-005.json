@@ -1,0 +1,38 @@
+{
+  "id": "TASK-005",
+  "title": "Configure Supabase Auth project settings",
+  "category": "security",
+  "description": "Set the required Supabase Auth configuration flags via the dashboard to enforce email verification, secure sessions, and appropriate token lifetimes.",
+  "dependencies": [],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "Email Confirmations is set to ON",
+    "Secure Email Change is set to ON",
+    "JWT expiry is set to 3600 seconds (1 hour)",
+    "Refresh Token Rotation is set to ON",
+    "Site URL is configured to the correct frontend origin",
+    "Redirect URLs allowlist includes /auth/callback path"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Open Supabase Auth settings",
+      "details": "Supabase Dashboard → Authentication → Providers → Email. Enable 'Confirm email'. Enable 'Secure email change'.",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Set JWT and session settings",
+      "details": "Authentication → Configuration → Sessions. Set JWT Expiry to 3600. Enable 'Refresh token rotation'.",
+      "passes": false
+    },
+    {
+      "number": 3,
+      "description": "Set Site URL and redirect allowlist",
+      "details": "Authentication → URL Configuration. Set Site URL to your frontend origin (e.g. http://localhost:3000 for dev). Add to Redirect URLs: http://localhost:3000/auth/callback",
+      "passes": false
+    }
+  ],
+  "technical_notes": "These settings affect the auth.users table and JWT tokens issued by Supabase. They cannot be set via SQL — must be done through the dashboard or Management API.",
+  "passes": false
+}

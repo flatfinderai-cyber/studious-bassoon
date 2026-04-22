@@ -1,0 +1,31 @@
+{
+  "id": "TASK-003",
+  "title": "Create siwe_nonces table SQL migration",
+  "category": "data-model",
+  "description": "Write and run the SQL migration for the siwe_nonces table, which stores single-use nonces for Sign-In With Ethereum challenges.",
+  "dependencies": [],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "Table `siwe_nonces` exists in the public schema",
+    "Column `nonce` is text, primary key",
+    "Column `address` is text, not null",
+    "Column `expires_at` is timestamptz, not null",
+    "Column `used` is boolean, not null, default false"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Write and run CREATE TABLE",
+      "details": "CREATE TABLE public.siwe_nonces (\n  nonce TEXT PRIMARY KEY,\n  address TEXT NOT NULL,\n  expires_at TIMESTAMPTZ NOT NULL,\n  used BOOLEAN NOT NULL DEFAULT false\n);",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Add cleanup index on expires_at",
+      "details": "CREATE INDEX idx_siwe_nonces_expires ON public.siwe_nonces(expires_at); — supports efficient deletion of expired nonces.",
+      "passes": false
+    }
+  ],
+  "technical_notes": "This table is only ever accessed via the service-role key inside Edge Functions. No RLS needed — client never queries it directly. Consider a cron job (pg_cron or Supabase scheduled function) to prune expired rows periodically.",
+  "passes": false
+}

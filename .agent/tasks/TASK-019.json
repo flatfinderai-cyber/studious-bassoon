@@ -1,0 +1,23 @@
+{
+  "id": "TASK-019",
+  "title": "Create /login page HTML structure and CSS",
+  "category": "ui-ux",
+  "description": "Create login.html with the shared card layout, heading, and a link to /signup for users without an account.",
+  "dependencies": ["TASK-010"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "login.html exists",
+    "Shares the same card container and CSS as signup.html (via auth.css)",
+    "Heading reads 'Welcome back'",
+    "Footer link: 'Don't have an account? Sign up' linking to /signup"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Create login.html",
+      "details": "Copy base structure from signup.html. Change heading to 'Welcome back'. Change footer link to point to /signup.",
+      "passes": false
+    }
+  ],
+  "passes": false
+}

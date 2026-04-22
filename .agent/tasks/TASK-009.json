@@ -1,0 +1,29 @@
+{
+  "id": "TASK-009",
+  "title": "Initialise Supabase JS client (shared module)",
+  "category": "functional",
+  "description": "Create a single shared JavaScript module that initialises the Supabase client using environment variables. All auth pages import from this module.",
+  "dependencies": ["TASK-005"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "A file supabase.js (or supabase-client.js) exists and exports a configured Supabase client",
+    "SUPABASE_URL and SUPABASE_ANON_KEY are read from environment or a config constant — never hardcoded in page scripts",
+    "Importing the module and calling supabase.auth.getSession() returns a valid response object"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Create supabase-client.js",
+      "details": "import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';\nexport const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);\n\nReplace SUPABASE_URL and SUPABASE_ANON_KEY with your project values (from Supabase dashboard → Project Settings → API).",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Test the import in browser console",
+      "details": "Open a page that imports supabase-client.js. In DevTools console run: const { data } = await supabase.auth.getSession(); console.log(data); — expect { session: null } when not logged in.",
+      "passes": false
+    }
+  ],
+  "technical_notes": "Using the ESM CDN import avoids a build step and is consistent with the current vanilla JS codebase. If a bundler is introduced later, swap the import path to the npm package.",
+  "passes": false
+}

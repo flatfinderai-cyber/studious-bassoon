@@ -1,0 +1,43 @@
+{
+  "id": "TASK-008",
+  "title": "Enable RLS and add policies on tenant_preferences",
+  "category": "security",
+  "description": "Enable RLS on tenant_preferences and add SELECT, INSERT, and UPDATE policies so tenants can only access their own preferences row.",
+  "dependencies": ["TASK-002"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "RLS is enabled on public.tenant_preferences",
+    "SELECT policy: auth.uid() = user_id",
+    "INSERT policy: auth.uid() = user_id",
+    "UPDATE policy: USING auth.uid() = user_id, WITH CHECK auth.uid() = user_id",
+    "A landlord user cannot read or write any tenant_preferences row"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Enable RLS",
+      "details": "ALTER TABLE public.tenant_preferences ENABLE ROW LEVEL SECURITY;",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Add SELECT policy",
+      "details": "CREATE POLICY \"Tenants can view own preferences\" ON public.tenant_preferences FOR SELECT USING (auth.uid() = user_id);",
+      "passes": false
+    },
+    {
+      "number": 3,
+      "description": "Add INSERT policy",
+      "details": "CREATE POLICY \"Tenants can insert own preferences\" ON public.tenant_preferences FOR INSERT WITH CHECK (auth.uid() = user_id);",
+      "passes": false
+    },
+    {
+      "number": 4,
+      "description": "Add UPDATE policy",
+      "details": "CREATE POLICY \"Tenants can update own preferences\" ON public.tenant_preferences FOR UPDATE USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);",
+      "passes": false
+    }
+  ],
+  "technical_notes": "No DELETE policy is defined — tenant preferences are never deleted independently; they cascade-delete when the profile is deleted (via profiles FK).",
+  "passes": false
+}

@@ -1,0 +1,22 @@
+{
+  "id": "TASK-024",
+  "title": "Implement magic link login (signInWithOtp from /login)",
+  "category": "functional",
+  "description": "Wire the magic link send button on /login to signInWithOtp and redirect to /verify-email.",
+  "dependencies": ["TASK-009", "TASK-021"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "Clicking 'Send link' on /login calls supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: origin + '/auth/callback' } })",
+    "On success: redirect to /verify-email?email=[email]",
+    "On error: show error inline"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Wire send button",
+      "details": "document.getElementById('send-magic-link-login').addEventListener('click', async () => { const email = document.getElementById('magic-email').value; const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin + '/auth/callback' } }); if (error) { showError(error.message); return; } window.location.href = '/verify-email?email=' + encodeURIComponent(email); });",
+      "passes": false
+    }
+  ],
+  "passes": false
+}

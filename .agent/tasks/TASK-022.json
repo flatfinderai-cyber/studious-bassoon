@@ -1,0 +1,22 @@
+{
+  "id": "TASK-022",
+  "title": "Add 'Connect Wallet' button to /login",
+  "category": "ui-ux",
+  "description": "Add the wallet connect button to login.html — same placeholder as /signup (Phase 2 wires it up).",
+  "dependencies": ["TASK-021"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "Connect Wallet button visible below magic link section",
+    "Button has id='wallet-connect-btn-login'",
+    "Clicking shows placeholder toast 'Wallet sign-in coming soon'"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Add wallet button",
+      "details": "Same HTML as TASK-013 but id='wallet-connect-btn-login'. Same placeholder click handler.",
+      "passes": false
+    }
+  ],
+  "passes": false
+}

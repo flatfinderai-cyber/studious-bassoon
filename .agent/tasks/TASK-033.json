@@ -1,0 +1,43 @@
+{
+  "id": "TASK-033",
+  "title": "Implement tenant step 2 save + set onboarding_complete",
+  "category": "functional",
+  "description": "On 'Finish setup' in tenant step 2, upsert all tenant preferences to Supabase and mark onboarding_complete = true on profiles.",
+  "dependencies": ["TASK-009", "TASK-029", "TASK-032", "TASK-008"],
+  "complexity": "medium",
+  "acceptance_criteria": [
+    "Clicking 'Finish setup' reads locations from sessionStorage",
+    "Upserts a row in tenant_preferences with all collected data",
+    "Updates profiles: set onboarding_complete = true",
+    "On success: clears sessionStorage keys, redirects to /search",
+    "On error: shows inline error, does not redirect",
+    "Button shows loading state during the writes"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Read data from sessionStorage and form",
+      "details": "const locations = JSON.parse(sessionStorage.getItem('onboarding_locations') || '[]');\nconst minBudget = parseFloat(document.getElementById('min-budget').value) || null;\nconst maxBudget = parseFloat(document.getElementById('max-budget').value) || null;\nconst moveIn = document.getElementById('move-in-date').value || null;\nconst bedrooms = selectedBedrooms;",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Upsert tenant_preferences",
+      "details": "const { data: { session } } = await supabase.auth.getSession();\nconst userId = session.user.id;\nconst { error: prefError } = await supabase.from('tenant_preferences').upsert({ user_id: userId, preferred_locations: locations, min_budget: minBudget, max_budget: maxBudget, move_in_date: moveIn, bedrooms_min: bedrooms });",
+      "passes": false
+    },
+    {
+      "number": 3,
+      "description": "Update profiles.onboarding_complete",
+      "details": "const { error: profError } = await supabase.from('profiles').update({ onboarding_complete: true }).eq('id', userId);\nif (prefError || profError) { showError('Something went wrong. Please try again.'); return; }",
+      "passes": false
+    },
+    {
+      "number": 4,
+      "description": "Clean up and redirect",
+      "details": "sessionStorage.removeItem('onboarding_locations');\nwindow.location.href = '/search';",
+      "passes": false
+    }
+  ],
+  "passes": false
+}
