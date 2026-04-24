@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account — FlatFinder™</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+
+<header>
+    <a href="flatfinder-landing.html" class="logo">
+        <span class="logo-cat">🐱</span>
+        <span>FlatFinder™</span>
+    </a>
+</header>
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <h1>Create your account</h1>
+        <p class="subtitle">Find your next flat or list your property.</p>
+
+        <div id="error-msg" class="error-msg" hidden></div>
+
+        <!-- Email + password form -->
+        <form id="signup-form" novalidate>
+            <div class="form-group">
+                <label for="name">Full name</label>
+                <input type="text" id="name" autocomplete="name" placeholder="Your name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" autocomplete="email" placeholder="you@example.com" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" autocomplete="new-password" placeholder="Min 8 chars, include a number" required minlength="8">
+                <p class="hint">At least 8 characters and one number</p>
+            </div>
+            <button type="submit" class="btn btn-primary" id="submit-btn">Create account</button>
+        </form>
+
+        <div class="divider">or</div>
+
+        <!-- Magic link -->
+        <div id="magic-link-section">
+            <button type="button" class="btn btn-secondary" id="magic-link-btn">
+                ✉️ Sign up without a password
+            </button>
+            <div id="magic-link-form" hidden style="margin-top:0.75rem;">
+                <div class="form-group" style="margin-bottom:0.75rem;">
+                    <label for="magic-email">Email address</label>
+                    <input type="email" id="magic-email" placeholder="you@example.com">
+                </div>
+                <button type="button" class="btn btn-secondary" id="send-magic-link">Send sign-up link</button>
+            </div>
+        </div>
+
+        <div class="divider">or</div>
+
+        <!-- Wallet connect -->
+        <button type="button" class="btn btn-outline" id="wallet-connect-btn">
+            <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M9.58 11.5C13.13 7.97 18.87 7.97 22.42 11.5L22.87 11.95C23.05 12.13 23.05 12.42 22.87 12.6L21.44 14.03C21.35 14.12 21.2 14.12 21.11 14.03L20.49 13.41C18.05 10.97 14 10.97 11.56 13.41L10.89 14.08C10.8 14.17 10.65 14.17 10.56 14.08L9.13 12.65C8.95 12.47 8.95 12.18 9.13 12L9.58 11.5ZM25.37 14.45L26.64 15.72C26.82 15.9 26.82 16.19 26.64 16.37L20.77 22.24C20.59 22.42 20.3 22.42 20.12 22.24L16.09 18.21C16.04 18.17 15.97 18.17 15.92 18.21L11.89 22.24C11.71 22.42 11.42 22.42 11.24 22.24L5.37 16.37C5.19 16.19 5.19 15.9 5.37 15.72L6.64 14.45C6.82 14.27 7.11 14.27 7.29 14.45L11.32 18.48C11.37 18.53 11.44 18.53 11.49 18.48L15.52 14.45C15.7 14.27 15.99 14.27 16.17 14.45L20.2 18.48C20.25 18.53 20.32 18.53 20.37 18.48L24.4 14.45C24.58 14.27 24.88 14.27 25.37 14.45Z" fill="#3B99FC"/>
+            </svg>
+            Connect Wallet
+        </button>
+
+        <p class="auth-footer-link">Already have an account? <a href="login.html">Sign in</a></p>
+    </div>
+</div>
+
+<footer>
+    <p>© 2024–2026 FlatFinder™: Housing Revolutionised™</p>
+</footer>
+
+<script type="module">
+    import { supabase } from './supabase-client.js';
+    import { showError, clearError, showToast } from './auth-utils.js';
+
+    // ── Password form ──
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearError('error-msg');
+
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+
+        if (!/[0-9]/.test(password)) {
+            showError('error-msg', 'Password must contain at least one number.');
+            return;
+        }
+
+        const btn = document.getElementById('submit-btn');
+        btn.disabled = true;
+        btn.textContent = 'Creating account…';
+
+        const { error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: { data: { full_name: name } }
+        });
+
+        if (error) {
+            showError('error-msg', error.message);
+            btn.disabled = false;
+            btn.textContent = 'Create account';
+            return;
+        }
+
+        sessionStorage.setItem('pending_email', email);
+        window.location.href = 'verify-email.html?email=' + encodeURIComponent(email);
+    });
+
+    // ── Magic link toggle ──
+    document.getElementById('magic-link-btn').addEventListener('click', () => {
+        const form = document.getElementById('magic-link-form');
+        form.hidden = !form.hidden;
+        if (!form.hidden) document.getElementById('magic-email').focus();
+    });
+
+    // ── Magic link send ──
+    document.getElementById('send-magic-link').addEventListener('click', async () => {
+        const email = document.getElementById('magic-email').value.trim();
+        if (!email) { showToast('Please enter your email.'); return; }
+        clearError('error-msg');
+
+        const btn = document.getElementById('send-magic-link');
+        btn.disabled = true;
+        btn.textContent = 'Sending…';
+
+        const { error } = await supabase.auth.signInWithOtp({
+            email,
+            options: { emailRedirectTo: window.location.origin + '/auth-callback.html' }
+        });
+
+        if (error) {
+            showError('error-msg', error.message);
+            btn.disabled = false;
+            btn.textContent = 'Send sign-up link';
+            return;
+        }
+
+        sessionStorage.setItem('pending_email', email);
+        window.location.href = 'verify-email.html?email=' + encodeURIComponent(email);
+    });
+
+    // ── Wallet connect (placeholder — Phase 2) ──
+    document.getElementById('wallet-connect-btn').addEventListener('click', () => {
+        showToast('Wallet sign-in coming soon!');
+    });
+</script>
+</body>
+</html>

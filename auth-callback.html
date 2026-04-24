@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signing you in… — FlatFinder™</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+
+<header>
+    <a href="flatfinder-landing.html" class="logo">
+        <span class="logo-cat">🐱</span>
+        <span>FlatFinder™</span>
+    </a>
+</header>
+
+<div class="auth-wrapper">
+    <div class="auth-card" style="text-align:center;">
+        <div id="loading-state">
+            <div class="spinner"></div>
+            <p style="color:#666;font-size:0.9rem;">Signing you in…</p>
+        </div>
+        <div id="error-state" hidden>
+            <div style="font-size:2.5rem;margin-bottom:1rem;">⚠️</div>
+            <h1 style="font-size:1.25rem;margin-bottom:0.5rem;">Link expired</h1>
+            <p class="subtitle">This sign-in link has expired or already been used.</p>
+            <a href="signup.html" class="btn btn-primary" style="margin-top:1.25rem;display:flex;">
+                Start over
+            </a>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>© 2024–2026 FlatFinder™: Housing Revolutionised™</p>
+</footer>
+
+<script type="module">
+    import { supabase } from './supabase-client.js';
+
+    async function handlePostAuth(session) {
+        const { data: profile } = await supabase
+            .from('profiles')
+            .select('role, onboarding_complete')
+            .eq('id', session.user.id)
+            .single();
+
+        if (!profile || !profile.onboarding_complete) {
+            window.location.href = 'onboarding-role.html';
+            return;
+        }
+
+        window.location.href = profile.role === 'landlord' ? 'listings.html' : 'search.html';
+    }
+
+    // Supabase JS v2 automatically processes the URL hash/code on init and fires this event
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+        if (event === 'SIGNED_IN' && session) {
+            subscription.unsubscribe();
+            await handlePostAuth(session);
+        }
+    });
+
+    // Fallback: if no auth event fires within 5 seconds, show error
+    setTimeout(async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            document.getElementById('loading-state').hidden = true;
+            document.getElementById('error-state').hidden = false;
+        }
+    }, 5000);
+</script>
+</body>
+</html>

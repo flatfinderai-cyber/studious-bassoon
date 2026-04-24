@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Your Inbox — FlatFinder™</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="auth.css">
+    <style>
+        .verify-icon { font-size: 3.5rem; text-align: center; margin-bottom: 1rem; }
+        .email-display {
+            background: #f5f5f5;
+            border-radius: 6px;
+            padding: 0.5rem 0.875rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            word-break: break-all;
+            margin: 0.25rem 0 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="flatfinder-landing.html" class="logo">
+        <span class="logo-cat">🐱</span>
+        <span>FlatFinder™</span>
+    </a>
+</header>
+
+<div class="auth-wrapper">
+    <div class="auth-card" style="text-align:center;">
+        <div class="verify-icon">✉️</div>
+        <h1>Check your inbox</h1>
+        <p class="subtitle" style="margin-bottom:0.5rem;">We sent a verification link to</p>
+        <div class="email-display" id="email-display">your email</div>
+        <p class="subtitle">Click the link to activate your account. It expires in 24 hours.</p>
+
+        <button class="btn btn-primary" id="resend-btn" style="margin-top:1.25rem;">Resend email</button>
+        <p class="auth-footer-link" style="margin-top:0.875rem;">
+            <a href="signup.html">Wrong email? Go back</a>
+        </p>
+    </div>
+</div>
+
+<footer>
+    <p>© 2024–2026 FlatFinder™: Housing Revolutionised™</p>
+</footer>
+
+<script type="module">
+    import { supabase } from './supabase-client.js';
+    import { showToast } from './auth-utils.js';
+
+    const params = new URLSearchParams(location.search);
+    const email = params.get('email') || sessionStorage.getItem('pending_email') || '';
+    document.getElementById('email-display').textContent = email || 'your inbox';
+
+    const resendBtn = document.getElementById('resend-btn');
+
+    resendBtn.addEventListener('click', async () => {
+        if (!email) { showToast('No email address found. Please sign up again.'); return; }
+
+        resendBtn.disabled = true;
+        await supabase.auth.signInWithOtp({
+            email,
+            options: { emailRedirectTo: window.location.origin + '/auth-callback.html' }
+        });
+        startCooldown();
+    });
+
+    function startCooldown() {
+        let t = 30;
+        const iv = setInterval(() => {
+            resendBtn.textContent = `Resend in ${t}s`;
+            if (--t < 0) {
+                clearInterval(iv);
+                resendBtn.disabled = false;
+                resendBtn.textContent = 'Resend email';
+            }
+        }, 1000);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Requirements — FlatFinder™</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="auth.css">
+    <style>
+        .budget-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+        @media (max-width: 400px) { .budget-row { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="flatfinder-landing.html" class="logo">
+        <span class="logo-cat">🐱</span>
+        <span>FlatFinder™</span>
+    </a>
+</header>
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="progress-dots">
+            <div class="dot done"></div>
+            <div class="dot active"></div>
+        </div>
+        <h1>Tell us what you need</h1>
+        <p class="subtitle">All fields are optional — fill in what you know.</p>
+
+        <div id="error-msg" class="error-msg" hidden></div>
+
+        <div class="form-group">
+            <label>Monthly budget (£/month)</label>
+            <div class="budget-row">
+                <input type="number" id="min-budget" placeholder="Min" min="0" step="50">
+                <input type="number" id="max-budget" placeholder="Max" min="0" step="50">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="move-in-date">Earliest move-in date</label>
+            <input type="date" id="move-in-date">
+        </div>
+
+        <div class="form-group">
+            <label>Minimum bedrooms</label>
+            <div class="bedroom-group">
+                <button type="button" class="bedroom-btn" data-val="0">Studio</button>
+                <button type="button" class="bedroom-btn" data-val="1">1</button>
+                <button type="button" class="bedroom-btn" data-val="2">2</button>
+                <button type="button" class="bedroom-btn" data-val="3">3</button>
+                <button type="button" class="bedroom-btn" data-val="4">4+</button>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" id="finish-btn" style="margin-top:1.5rem;">Finish setup 🎉</button>
+        <p class="auth-footer-link"><a href="onboarding-tenant-1.html">← Back</a></p>
+    </div>
+</div>
+
+<footer>
+    <p>© 2024–2026 FlatFinder™: Housing Revolutionised™</p>
+</footer>
+
+<script type="module">
+    import { supabase } from './supabase-client.js';
+    import { requireAuth, showError, clearError } from './auth-utils.js';
+
+    const session = await requireAuth();
+    if (!session) throw new Error('Not authenticated');
+
+    let selectedBedrooms = null;
+
+    document.querySelectorAll('.bedroom-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.bedroom-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedBedrooms = parseInt(btn.dataset.val);
+        });
+    });
+
+    document.getElementById('finish-btn').addEventListener('click', async () => {
+        clearError('error-msg');
+
+        const locations = JSON.parse(sessionStorage.getItem('onboarding_locations') || '[]');
+        const minBudget = parseFloat(document.getElementById('min-budget').value) || null;
+        const maxBudget = parseFloat(document.getElementById('max-budget').value) || null;
+        const moveIn = document.getElementById('move-in-date').value || null;
+
+        const btn = document.getElementById('finish-btn');
+        btn.disabled = true;
+        btn.textContent = 'Saving…';
+
+        const userId = session.user.id;
+
+        const { error: prefError } = await supabase
+            .from('tenant_preferences')
+            .upsert({
+                user_id: userId,
+                preferred_locations: locations.length > 0 ? locations : null,
+                min_budget: minBudget,
+                max_budget: maxBudget,
+                move_in_date: moveIn,
+                bedrooms_min: selectedBedrooms
+            });
+
+        if (prefError) {
+            showError('error-msg', prefError.message);
+            btn.disabled = false;
+            btn.textContent = 'Finish setup 🎉';
+            return;
+        }
+
+        const { error: profError } = await supabase
+            .from('profiles')
+            .update({ onboarding_complete: true })
+            .eq('id', userId);
+
+        if (profError) {
+            showError('error-msg', profError.message);
+            btn.disabled = false;
+            btn.textContent = 'Finish setup 🎉';
+            return;
+        }
+
+        sessionStorage.removeItem('onboarding_locations');
+        window.location.href = 'search.html';
+    });
+</script>
+</body>
+</html>

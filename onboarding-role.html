@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Started — FlatFinder™</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+
+<header>
+    <a href="flatfinder-landing.html" class="logo">
+        <span class="logo-cat">🐱</span>
+        <span>FlatFinder™</span>
+    </a>
+</header>
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <h1>What brings you to FlatFinder?</h1>
+        <p class="subtitle">We'll tailor your experience to suit you.</p>
+
+        <div id="error-msg" class="error-msg" hidden></div>
+
+        <div class="role-cards">
+            <button type="button" class="role-card" data-role="tenant">
+                <div class="role-icon">🔍</div>
+                <strong>I'm looking for a flat</strong>
+                <p>Browse verified listings in your area</p>
+            </button>
+            <button type="button" class="role-card" data-role="landlord">
+                <div class="role-icon">🏠</div>
+                <strong>I'm listing a property</strong>
+                <p>Reach quality tenants faster</p>
+            </button>
+        </div>
+
+        <button class="btn btn-primary" id="continue-btn" disabled>Continue →</button>
+    </div>
+</div>
+
+<footer>
+    <p>© 2024–2026 FlatFinder™: Housing Revolutionised™</p>
+</footer>
+
+<script type="module">
+    import { supabase } from './supabase-client.js';
+    import { requireAuth, showError, clearError } from './auth-utils.js';
+
+    let selectedRole = null;
+
+    const session = await requireAuth();
+    if (!session) throw new Error('Not authenticated');
+
+    document.querySelectorAll('.role-card').forEach(card => {
+        card.addEventListener('click', () => {
+            document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedRole = card.dataset.role;
+            document.getElementById('continue-btn').disabled = false;
+        });
+    });
+
+    document.getElementById('continue-btn').addEventListener('click', async () => {
+        if (!selectedRole) return;
+        clearError('error-msg');
+
+        const btn = document.getElementById('continue-btn');
+        btn.disabled = true;
+        btn.textContent = 'Saving…';
+
+        const { error } = await supabase
+            .from('profiles')
+            .update({ role: selectedRole })
+            .eq('id', session.user.id);
+
+        if (error) {
+            showError('error-msg', error.message);
+            btn.disabled = false;
+            btn.textContent = 'Continue →';
+            return;
+        }
+
+        window.location.href = selectedRole === 'landlord'
+            ? 'onboarding-landlord.html'
+            : 'onboarding-tenant-1.html';
+    });
+</script>
+</body>
+</html>
