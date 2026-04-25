@@ -1,0 +1,30 @@
+{
+  "id": "TASK-025",
+  "title": "Implement logout (signOut + redirect)",
+  "category": "functional",
+  "description": "Add a logout function callable from any page. Clears the Supabase session and redirects to the homepage.",
+  "dependencies": ["TASK-009"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "A function logOut() exists in a shared auth-utils.js module",
+    "It calls supabase.auth.signOut()",
+    "On success: redirects to /",
+    "Any page with a logout button wires its click to logOut()",
+    "After logout, navigating to a protected page redirects back to /login"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Add logOut to auth-utils.js",
+      "details": "export async function logOut() { await supabase.auth.signOut(); window.location.href = '/'; }",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Add session guard helper",
+      "details": "export async function requireAuth() { const { data: { session } } = await supabase.auth.getSession(); if (!session) { window.location.href = '/login'; } return session; } — import and call this at the top of every protected page.",
+      "passes": false
+    }
+  ],
+  "passes": false
+}

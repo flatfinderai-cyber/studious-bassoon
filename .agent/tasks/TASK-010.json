@@ -1,0 +1,44 @@
+{
+  "id": "TASK-010",
+  "title": "Create /signup page HTML structure and CSS",
+  "category": "ui-ux",
+  "description": "Create the signup.html page with the card container, heading, and shared layout. No form logic yet — just structure and styling.",
+  "dependencies": [],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "signup.html exists at the project root (or /pages/signup.html)",
+    "Page has a centred card container, max-width 420px",
+    "FlatFinder logo or wordmark appears at the top of the card",
+    "Page heading reads 'Create your account'",
+    "The page is responsive and displays correctly on 375px wide viewport",
+    "Matches the visual style of the existing beta-signup.html (fonts, colours)"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Create signup.html with base HTML boilerplate",
+      "details": "Copy the <head> section (meta tags, Google Fonts link, favicon) from beta-signup.html. Add a <main> with a centred card div.",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Add card CSS",
+      "details": "Card styles: max-width: 420px; margin: 80px auto; padding: 40px 32px; border-radius: 12px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); background: #fff.",
+      "passes": false
+    },
+    {
+      "number": 3,
+      "description": "Add heading and subheading",
+      "details": "h1: 'Create your account'. p: 'Find your next flat or list your property.'",
+      "passes": false
+    },
+    {
+      "number": 4,
+      "description": "Verify at 375px width",
+      "details": "Open in browser, use DevTools device toolbar at 375px. Confirm card does not overflow horizontally.",
+      "passes": false
+    }
+  ],
+  "technical_notes": "Keep all auth-page CSS in a shared auth.css file to avoid duplication across signup, login, and onboarding pages.",
+  "passes": false
+}

@@ -1,0 +1,60 @@
+{
+  "project": "FlatFinder Authentication System",
+  "build": "FF-BUILD-001",
+  "generated": "2026-04-22",
+  "prd": "FF-BUILD-001.md",
+  "phases": [
+    {
+      "id": "phase-1",
+      "name": "Email Auth Foundation",
+      "tasks": ["TASK-001","TASK-002","TASK-003","TASK-004","TASK-005","TASK-006","TASK-007","TASK-008","TASK-009","TASK-010","TASK-011","TASK-012","TASK-013","TASK-014","TASK-015","TASK-016","TASK-017","TASK-018","TASK-019","TASK-020","TASK-021","TASK-022","TASK-023","TASK-024","TASK-025","TASK-026","TASK-027","TASK-028","TASK-029","TASK-030","TASK-031","TASK-032","TASK-033","TASK-034"]
+    },
+    {
+      "id": "phase-2",
+      "name": "SIWE / Wallet Auth",
+      "tasks": ["TASK-035","TASK-036","TASK-037","TASK-038","TASK-039","TASK-040"]
+    }
+  ],
+  "tasks": [
+    { "id": "TASK-001", "title": "Create profiles table SQL migration", "category": "data-model", "spec": ".agent/tasks/TASK-001.json", "passes": true },
+    { "id": "TASK-002", "title": "Create tenant_preferences table SQL migration", "category": "data-model", "spec": ".agent/tasks/TASK-002.json", "passes": true },
+    { "id": "TASK-003", "title": "Create siwe_nonces table SQL migration", "category": "data-model", "spec": ".agent/tasks/TASK-003.json", "passes": true },
+    { "id": "TASK-004", "title": "Create on_auth_user_created trigger", "category": "data-model", "spec": ".agent/tasks/TASK-004.json", "passes": true },
+    { "id": "TASK-005", "title": "Configure Supabase Auth project settings", "category": "security", "spec": ".agent/tasks/TASK-005.json", "passes": false, "note": "Requires Supabase Dashboard: Authentication → Settings → enable email confirmation + set redirect URL to /auth-callback.html" },
+    { "id": "TASK-006", "title": "Enable RLS and add SELECT policy on profiles", "category": "security", "spec": ".agent/tasks/TASK-006.json", "passes": true },
+    { "id": "TASK-007", "title": "Add UPDATE policy on profiles", "category": "security", "spec": ".agent/tasks/TASK-007.json", "passes": true },
+    { "id": "TASK-008", "title": "Enable RLS and add policies on tenant_preferences", "category": "security", "spec": ".agent/tasks/TASK-008.json", "passes": true },
+    { "id": "TASK-009", "title": "Initialise Supabase JS client (shared module)", "category": "functional", "spec": ".agent/tasks/TASK-009.json", "passes": true },
+    { "id": "TASK-010", "title": "Create /signup page HTML structure and CSS", "category": "ui-ux", "spec": ".agent/tasks/TASK-010.json", "passes": true },
+    { "id": "TASK-011", "title": "Add email + password form fields to /signup", "category": "ui-ux", "spec": ".agent/tasks/TASK-011.json", "passes": true },
+    { "id": "TASK-012", "title": "Add 'Sign up without a password' button to /signup", "category": "ui-ux", "spec": ".agent/tasks/TASK-012.json", "passes": true },
+    { "id": "TASK-013", "title": "Add 'Connect Wallet' button to /signup", "category": "ui-ux", "spec": ".agent/tasks/TASK-013.json", "passes": true },
+    { "id": "TASK-014", "title": "Create /verify-email holding screen", "category": "ui-ux", "spec": ".agent/tasks/TASK-014.json", "passes": true },
+    { "id": "TASK-015", "title": "Implement email + password signUp call", "category": "functional", "spec": ".agent/tasks/TASK-015.json", "passes": true },
+    { "id": "TASK-016", "title": "Implement magic link signUp (signInWithOtp)", "category": "functional", "spec": ".agent/tasks/TASK-016.json", "passes": true },
+    { "id": "TASK-017", "title": "Create /auth/callback page and token exchange handler", "category": "functional", "spec": ".agent/tasks/TASK-017.json", "passes": true },
+    { "id": "TASK-018", "title": "Add post-callback redirect logic (onboarding vs dashboard)", "category": "functional", "spec": ".agent/tasks/TASK-018.json", "passes": true },
+    { "id": "TASK-019", "title": "Create /login page HTML structure and CSS", "category": "ui-ux", "spec": ".agent/tasks/TASK-019.json", "passes": true },
+    { "id": "TASK-020", "title": "Add email + password form to /login", "category": "ui-ux", "spec": ".agent/tasks/TASK-020.json", "passes": true },
+    { "id": "TASK-021", "title": "Add magic link send form to /login", "category": "ui-ux", "spec": ".agent/tasks/TASK-021.json", "passes": true },
+    { "id": "TASK-022", "title": "Add 'Connect Wallet' button to /login", "category": "ui-ux", "spec": ".agent/tasks/TASK-022.json", "passes": true },
+    { "id": "TASK-023", "title": "Implement email + password signInWithPassword", "category": "functional", "spec": ".agent/tasks/TASK-023.json", "passes": true },
+    { "id": "TASK-024", "title": "Implement magic link login (signInWithOtp from /login)", "category": "functional", "spec": ".agent/tasks/TASK-024.json", "passes": true },
+    { "id": "TASK-025", "title": "Implement logout (signOut + redirect)", "category": "functional", "spec": ".agent/tasks/TASK-025.json", "passes": true },
+    { "id": "TASK-026", "title": "Add post-login routing (check onboarding_complete)", "category": "functional", "spec": ".agent/tasks/TASK-026.json", "passes": true },
+    { "id": "TASK-027", "title": "Create /onboarding/role page (two role cards)", "category": "ui-ux", "spec": ".agent/tasks/TASK-027.json", "passes": true },
+    { "id": "TASK-028", "title": "Create /onboarding/tenant step 1 (location)", "category": "ui-ux", "spec": ".agent/tasks/TASK-028.json", "passes": true },
+    { "id": "TASK-029", "title": "Create /onboarding/tenant step 2 (budget, date, bedrooms)", "category": "ui-ux", "spec": ".agent/tasks/TASK-029.json", "passes": true },
+    { "id": "TASK-030", "title": "Create /onboarding/landlord page (display name confirmation)", "category": "ui-ux", "spec": ".agent/tasks/TASK-030.json", "passes": true },
+    { "id": "TASK-031", "title": "Implement role selection — write profiles.role", "category": "functional", "spec": ".agent/tasks/TASK-031.json", "passes": true },
+    { "id": "TASK-032", "title": "Implement tenant step 1 save (preferred_locations)", "category": "functional", "spec": ".agent/tasks/TASK-032.json", "passes": true },
+    { "id": "TASK-033", "title": "Implement tenant step 2 save + set onboarding_complete", "category": "functional", "spec": ".agent/tasks/TASK-033.json", "passes": true },
+    { "id": "TASK-034", "title": "Implement landlord onboarding save + set onboarding_complete", "category": "functional", "spec": ".agent/tasks/TASK-034.json", "passes": true },
+    { "id": "TASK-035", "title": "Create siwe-nonce Supabase Edge Function", "category": "api-endpoint", "spec": ".agent/tasks/TASK-035.json", "passes": true },
+    { "id": "TASK-036", "title": "Create siwe-verify Supabase Edge Function", "category": "api-endpoint", "spec": ".agent/tasks/TASK-036.json", "passes": true },
+    { "id": "TASK-037", "title": "Install and configure wallet client (SIWE via window.ethereum)", "category": "integration", "spec": ".agent/tasks/TASK-037.json", "passes": true },
+    { "id": "TASK-038", "title": "Implement wallet connect UI trigger (open modal)", "category": "ui-ux", "spec": ".agent/tasks/TASK-038.json", "passes": true },
+    { "id": "TASK-039", "title": "Implement SIWE frontend flow (nonce → sign → verify)", "category": "functional", "spec": ".agent/tasks/TASK-039.json", "passes": true },
+    { "id": "TASK-040", "title": "Handle wallet-authenticated session in /auth/callback", "category": "functional", "spec": ".agent/tasks/TASK-040.json", "passes": true }
+  ]
+}

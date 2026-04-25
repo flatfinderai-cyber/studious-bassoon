@@ -1,0 +1,23 @@
+{
+  "id": "TASK-023",
+  "title": "Implement email + password signInWithPassword",
+  "category": "functional",
+  "description": "Wire the /login form to Supabase's signInWithPassword and handle routing on success.",
+  "dependencies": ["TASK-009", "TASK-020"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "Form submit calls supabase.auth.signInWithPassword({ email, password })",
+    "On success: calls handlePostLogin() to route based on profile",
+    "On error: displays 'Incorrect email or password.' (not the raw Supabase error)",
+    "Submit button shows loading state during the request"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Add submit handler",
+      "details": "document.getElementById('login-form').addEventListener('submit', async (e) => { e.preventDefault(); setLoading(true); const { error } = await supabase.auth.signInWithPassword({ email, password }); setLoading(false); if (error) { showError('Incorrect email or password.'); return; } await handlePostLogin(); });",
+      "passes": false
+    }
+  ],
+  "passes": false
+}

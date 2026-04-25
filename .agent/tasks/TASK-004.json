@@ -1,0 +1,39 @@
+{
+  "id": "TASK-004",
+  "title": "Create on_auth_user_created trigger",
+  "category": "data-model",
+  "description": "Create a Postgres trigger that automatically inserts a profiles row whenever a new user is created in auth.users. This ensures every auth user always has a corresponding profile.",
+  "dependencies": ["TASK-001"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "A trigger function `handle_new_user` exists in the public schema",
+    "The trigger fires AFTER INSERT ON auth.users FOR EACH ROW",
+    "It inserts a row into public.profiles with id = NEW.id",
+    "display_name is populated from NEW.raw_user_meta_data->>'full_name' when present, else empty string",
+    "wallet_address is populated from NEW.raw_user_meta_data->>'wallet_address' when present, else NULL",
+    "onboarding_complete defaults to false",
+    "Inserting a test user into auth.users results in a matching profiles row"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Create the trigger function",
+      "details": "CREATE OR REPLACE FUNCTION public.handle_new_user()\nRETURNS TRIGGER AS $$\nBEGIN\n  INSERT INTO public.profiles (id, display_name, wallet_address)\n  VALUES (\n    NEW.id,\n    COALESCE(NEW.raw_user_meta_data->>'full_name', ''),\n    NEW.raw_user_meta_data->>'wallet_address'\n  );\n  RETURN NEW;\nEND;\n$$ LANGUAGE plpgsql SECURITY DEFINER;",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Attach the trigger to auth.users",
+      "details": "CREATE TRIGGER on_auth_user_created\nAFTER INSERT ON auth.users\nFOR EACH ROW EXECUTE FUNCTION public.handle_new_user();",
+      "passes": false
+    },
+    {
+      "number": 3,
+      "description": "Verify by creating a test user",
+      "details": "In Supabase Auth dashboard → Users → Invite user (test@example.com). Then run: SELECT * FROM profiles WHERE id = (SELECT id FROM auth.users WHERE email = 'test@example.com'); — confirm a profile row exists.",
+      "passes": false
+    }
+  ],
+  "technical_notes": "SECURITY DEFINER is required so the trigger can write to public.profiles even when called in the auth schema context. The function runs as the function owner (postgres), not the calling user.",
+  "passes": false
+}

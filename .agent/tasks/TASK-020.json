@@ -1,0 +1,24 @@
+{
+  "id": "TASK-020",
+  "title": "Add email + password form to /login",
+  "category": "ui-ux",
+  "description": "Add the email and password fields plus login submit button to login.html.",
+  "dependencies": ["TASK-019"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "Form has email (type=email) and password (type=password) fields",
+    "Submit button reads 'Sign in'",
+    "Error message element present (hidden by default)",
+    "Form has id='login-form'"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Add form HTML",
+      "details": "<form id='login-form'>\n  <label>Email<input type='email' id='email' required></label>\n  <label>Password<input type='password' id='password' required></label>\n  <p class='field-error' id='error-msg' hidden></p>\n  <button type='submit'>Sign in</button>\n</form>",
+      "passes": false
+    }
+  ],
+  "technical_notes": "No 'Forgot password' link in Phase 1 scope. The error element should handle 'Invalid login credentials' from Supabase gracefully — display as 'Incorrect email or password.'",
+  "passes": false
+}

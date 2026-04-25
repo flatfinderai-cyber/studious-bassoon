@@ -1,0 +1,30 @@
+{
+  "id": "TASK-007",
+  "title": "Add UPDATE policy on profiles",
+  "category": "security",
+  "description": "Add an RLS UPDATE policy to profiles so users can update only their own row, and restrict which columns can be changed.",
+  "dependencies": ["TASK-006"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "An UPDATE policy exists on public.profiles",
+    "The USING clause checks auth.uid() = id",
+    "The WITH CHECK clause also checks auth.uid() = id",
+    "Attempting to update another user's profile returns an error or affects 0 rows"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Create UPDATE policy",
+      "details": "CREATE POLICY \"Users can update own profile\"\nON public.profiles FOR UPDATE\nUSING (auth.uid() = id)\nWITH CHECK (auth.uid() = id);",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Verify",
+      "details": "Using the Supabase JS client with a valid user session, attempt: supabase.from('profiles').update({ display_name: 'Test' }).eq('id', OTHER_USER_ID). Confirm the update affects 0 rows.",
+      "passes": false
+    }
+  ],
+  "technical_notes": "Both USING and WITH CHECK are needed: USING filters which rows can be targeted, WITH CHECK prevents changing the id to bypass the policy.",
+  "passes": false
+}

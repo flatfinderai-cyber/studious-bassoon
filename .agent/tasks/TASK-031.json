@@ -1,0 +1,23 @@
+{
+  "id": "TASK-031",
+  "title": "Implement role selection — write profiles.role",
+  "category": "functional",
+  "description": "Wire the Continue button on /onboarding/role to write the selected role to profiles and navigate to the correct onboarding flow.",
+  "dependencies": ["TASK-009", "TASK-027", "TASK-006", "TASK-007"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "Clicking Continue calls supabase.from('profiles').update({ role: selectedRole }).eq('id', userId)",
+    "On success: role 'tenant' navigates to /onboarding/tenant-step-1, role 'landlord' navigates to /onboarding/landlord",
+    "On error: shows inline error message",
+    "Continue button shows loading state during the update"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Wire Continue button",
+      "details": "document.getElementById('continue-btn').addEventListener('click', async () => { continueBtn.disabled = true; continueBtn.textContent = 'Saving…'; const { data: { session } } = await supabase.auth.getSession(); const { error } = await supabase.from('profiles').update({ role: selectedRole }).eq('id', session.user.id); if (error) { showError(error.message); continueBtn.disabled = false; continueBtn.textContent = 'Continue'; return; } window.location.href = selectedRole === 'landlord' ? '/onboarding/landlord' : '/onboarding/tenant-step-1'; });",
+      "passes": false
+    }
+  ],
+  "passes": false
+}

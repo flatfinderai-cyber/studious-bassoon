@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Where Are You Looking? — FlatFinder™</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+
+<header>
+    <a href="flatfinder-landing.html" class="logo">
+        <span class="logo-cat">🐱</span>
+        <span>FlatFinder™</span>
+    </a>
+</header>
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="progress-dots">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+        </div>
+        <h1>Where are you looking?</h1>
+        <p class="subtitle">Add the cities or neighbourhoods you'd consider.</p>
+
+        <div id="error-msg" class="error-msg" hidden></div>
+
+        <div class="form-group">
+            <label for="location-input">City or area</label>
+            <div class="input-row">
+                <input type="text" id="location-input" placeholder="e.g. Hackney, London">
+                <button type="button" class="btn btn-secondary" id="add-location" style="width:auto;white-space:nowrap;">+ Add</button>
+            </div>
+        </div>
+
+        <div class="tags-container" id="location-tags"></div>
+
+        <button class="btn btn-primary" id="next-btn" disabled style="margin-top:1.5rem;">Next →</button>
+        <p class="auth-footer-link"><a href="onboarding-role.html">← Back</a></p>
+    </div>
+</div>
+
+<footer>
+    <p>© 2024–2026 FlatFinder™: Housing Revolutionised™</p>
+</footer>
+
+<script type="module">
+    import { requireAuth } from './auth-utils.js';
+
+    await requireAuth();
+
+    const tags = [];
+    const locationInput = document.getElementById('location-input');
+    const tagsContainer = document.getElementById('location-tags');
+    const nextBtn = document.getElementById('next-btn');
+
+    function renderTags() {
+        tagsContainer.replaceChildren(...tags.map((t, i) => {
+            const span = document.createElement('span');
+            span.className = 'tag';
+            span.textContent = t;
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.setAttribute('aria-label', `Remove ${t}`);
+            btn.textContent = '×';
+            btn.addEventListener('click', () => { tags.splice(i, 1); renderTags(); });
+            span.appendChild(btn);
+            return span;
+        }));
+        nextBtn.disabled = tags.length === 0;
+    }
+
+    function addLocation() {
+        const val = locationInput.value.trim();
+        if (!val) return;
+        if (!tags.includes(val)) {
+            tags.push(val);
+            renderTags();
+        }
+        locationInput.value = '';
+        locationInput.focus();
+    }
+
+    document.getElementById('add-location').addEventListener('click', addLocation);
+
+    locationInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); addLocation(); }
+    });
+
+    nextBtn.addEventListener('click', () => {
+        if (tags.length === 0) return;
+        sessionStorage.setItem('onboarding_locations', JSON.stringify(tags));
+        window.location.href = 'onboarding-tenant-2.html';
+    });
+</script>
+</body>
+</html>

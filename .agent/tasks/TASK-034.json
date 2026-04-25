@@ -1,0 +1,23 @@
+{
+  "id": "TASK-034",
+  "title": "Implement landlord onboarding save + set onboarding_complete",
+  "category": "functional",
+  "description": "On 'Go to my listings' in landlord onboarding, update the display_name on profiles and mark onboarding_complete = true.",
+  "dependencies": ["TASK-009", "TASK-030", "TASK-007"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "Clicking button updates profiles: display_name = input value, onboarding_complete = true",
+    "On success: redirect to /listings",
+    "On error: show inline error",
+    "Button shows loading state"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Wire Go to my listings button",
+      "details": "document.getElementById('go-to-listings').addEventListener('click', async () => { goBtn.disabled = true; goBtn.textContent = 'Saving…'; const { data: { session } } = await supabase.auth.getSession(); const displayName = document.getElementById('display-name').value.trim(); const { error } = await supabase.from('profiles').update({ display_name: displayName, onboarding_complete: true }).eq('id', session.user.id); if (error) { showError(error.message); goBtn.disabled = false; goBtn.textContent = 'Go to my listings'; return; } window.location.href = '/listings'; });",
+      "passes": false
+    }
+  ],
+  "passes": false
+}

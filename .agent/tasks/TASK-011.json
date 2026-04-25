@@ -1,0 +1,31 @@
+{
+  "id": "TASK-011",
+  "title": "Add email + password form fields to /signup",
+  "category": "ui-ux",
+  "description": "Add the name, email, and password form fields to signup.html with validation UI and a submit button.",
+  "dependencies": ["TASK-010"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "Form has three fields: Full Name (text), Email (email type), Password (password type)",
+    "Password field shows a helper: 'Min 8 characters, include at least one number'",
+    "Submit button reads 'Create account'",
+    "All fields show inline error messages below them (initially hidden, shown on validation failure)",
+    "Form has id='signup-form' for JS targeting"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Add form HTML",
+      "details": "<form id='signup-form'>\n  <label>Full name<input type='text' id='name' required></label>\n  <label>Email<input type='email' id='email' required></label>\n  <label>Password<input type='password' id='password' required minlength='8'></label>\n  <p class='field-hint'>Min 8 characters, include at least one number</p>\n  <p class='field-error' id='error-msg' hidden></p>\n  <button type='submit'>Create account</button>\n</form>",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Style form fields",
+      "details": "Inputs: width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; margin-bottom: 16px. Submit button: full-width, brand primary colour, 48px height.",
+      "passes": false
+    }
+  ],
+  "technical_notes": "No JS logic here. Submission handler is added in TASK-015.",
+  "passes": false
+}

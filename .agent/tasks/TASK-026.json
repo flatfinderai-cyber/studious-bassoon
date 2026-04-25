@@ -1,0 +1,24 @@
+{
+  "id": "TASK-026",
+  "title": "Add post-login routing (check onboarding_complete)",
+  "category": "functional",
+  "description": "Write the handlePostLogin() function used by the login page to check profile state and route users to the right place.",
+  "dependencies": ["TASK-009", "TASK-023"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "handlePostLogin() fetches profile for the current user",
+    "If onboarding_complete is false or null, redirect to /onboarding/role",
+    "If role is 'tenant' and onboarding_complete is true, redirect to /search",
+    "If role is 'landlord' and onboarding_complete is true, redirect to /listings"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Write handlePostLogin in auth-utils.js",
+      "details": "export async function handlePostLogin() { const { data: { session } } = await supabase.auth.getSession(); if (!session) return; const { data: profile } = await supabase.from('profiles').select('role, onboarding_complete').eq('id', session.user.id).single(); if (!profile || !profile.onboarding_complete) { window.location.href = '/onboarding/role'; return; } window.location.href = profile.role === 'landlord' ? '/listings' : '/search'; }",
+      "passes": false
+    }
+  ],
+  "technical_notes": "This is the same logic as TASK-018 handlePostAuth — extract into a shared auth-utils.js to avoid duplication.",
+  "passes": false
+}

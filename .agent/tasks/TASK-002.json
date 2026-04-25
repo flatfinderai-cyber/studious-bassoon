@@ -1,0 +1,41 @@
+{
+  "id": "TASK-002",
+  "title": "Create tenant_preferences table SQL migration",
+  "category": "data-model",
+  "description": "Write and run the SQL migration that creates the tenant_preferences table. Stores renter search preferences gathered during tenant onboarding.",
+  "dependencies": ["TASK-001"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "Table `tenant_preferences` exists in the public schema",
+    "Column `user_id` is UUID, primary key, references profiles(id) ON DELETE CASCADE",
+    "Column `preferred_locations` is text[], nullable",
+    "Column `max_budget` is numeric, nullable",
+    "Column `min_budget` is numeric, nullable",
+    "Column `move_in_date` is date, nullable",
+    "Column `bedrooms_min` is integer, nullable",
+    "Column `property_types` is text[], nullable",
+    "Column `updated_at` is timestamptz, default now()"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Write and run CREATE TABLE in Supabase SQL editor",
+      "details": "CREATE TABLE public.tenant_preferences (\n  user_id UUID PRIMARY KEY REFERENCES public.profiles(id) ON DELETE CASCADE,\n  preferred_locations TEXT[],\n  max_budget NUMERIC,\n  min_budget NUMERIC,\n  move_in_date DATE,\n  bedrooms_min INTEGER,\n  property_types TEXT[],\n  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()\n);",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Add updated_at auto-update trigger",
+      "details": "CREATE OR REPLACE FUNCTION update_updated_at()\nRETURNS TRIGGER AS $$\nBEGIN NEW.updated_at = now(); RETURN NEW; END;\n$$ LANGUAGE plpgsql;\n\nCREATE TRIGGER set_updated_at\nBEFORE UPDATE ON public.tenant_preferences\nFOR EACH ROW EXECUTE FUNCTION update_updated_at();",
+      "passes": false
+    },
+    {
+      "number": 3,
+      "description": "Verify",
+      "details": "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'tenant_preferences'; — confirm all 8 columns present.",
+      "passes": false
+    }
+  ],
+  "technical_notes": "One row per tenant user. Upsert (INSERT ... ON CONFLICT DO UPDATE) is the correct write pattern since onboarding is split into two steps.",
+  "passes": false
+}

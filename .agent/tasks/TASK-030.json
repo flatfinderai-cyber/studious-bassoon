@@ -1,0 +1,37 @@
+{
+  "id": "TASK-030",
+  "title": "Create /onboarding/landlord page (display name confirmation)",
+  "category": "ui-ux",
+  "description": "Create the single-step landlord onboarding page where landlords confirm their display or trading name.",
+  "dependencies": ["TASK-010"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "Page heading: 'Set up your landlord profile'",
+    "A text input pre-filled with the user's display_name from profiles",
+    "Label: 'Your name or agency name (shown on listings)'",
+    "A 'Go to my listings' button",
+    "Input is required and non-empty before button enables"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Create onboarding-landlord.html",
+      "details": "<label>Your name or agency name<input type='text' id='display-name' required></label>\n<button id='go-to-listings' disabled>Go to my listings</button>",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Pre-fill display name from profile",
+      "details": "const { data: { session } } = await supabase.auth.getSession();\nconst { data: profile } = await supabase.from('profiles').select('display_name').eq('id', session.user.id).single();\nif (profile) { document.getElementById('display-name').value = profile.display_name; }",
+      "passes": false
+    },
+    {
+      "number": 3,
+      "description": "Enable button on input",
+      "details": "displayNameInput.addEventListener('input', () => { goBtn.disabled = displayNameInput.value.trim().length === 0; });",
+      "passes": false
+    }
+  ],
+  "technical_notes": "'Go to my listings' click handler and Supabase write are in TASK-034.",
+  "passes": false
+}

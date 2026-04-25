@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Up Your Profile — FlatFinder™</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+
+<header>
+    <a href="flatfinder-landing.html" class="logo">
+        <span class="logo-cat">🐱</span>
+        <span>FlatFinder™</span>
+    </a>
+</header>
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <h1>Set up your landlord profile</h1>
+        <p class="subtitle">This name will appear on your listings.</p>
+
+        <div id="error-msg" class="error-msg" hidden></div>
+
+        <div class="form-group">
+            <label for="display-name">Your name or agency name</label>
+            <input type="text" id="display-name" placeholder="e.g. Alex Smith or Smith Lettings" required>
+            <p class="hint">Shown publicly on your property listings.</p>
+        </div>
+
+        <button class="btn btn-primary" id="go-btn" disabled>Go to my listings →</button>
+        <p class="auth-footer-link"><a href="onboarding-role.html">← Back</a></p>
+    </div>
+</div>
+
+<footer>
+    <p>© 2024–2026 FlatFinder™: Housing Revolutionised™</p>
+</footer>
+
+<script type="module">
+    import { supabase } from './supabase-client.js';
+    import { requireAuth, showError, clearError } from './auth-utils.js';
+
+    const session = await requireAuth();
+    if (!session) throw new Error('Not authenticated');
+
+    const displayNameInput = document.getElementById('display-name');
+    const goBtn = document.getElementById('go-btn');
+
+    // Pre-fill from existing profile
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('display_name')
+        .eq('id', session.user.id)
+        .single();
+
+    if (profile?.display_name) {
+        displayNameInput.value = profile.display_name;
+        goBtn.disabled = false;
+    }
+
+    displayNameInput.addEventListener('input', () => {
+        goBtn.disabled = displayNameInput.value.trim().length === 0;
+    });
+
+    goBtn.addEventListener('click', async () => {
+        clearError('error-msg');
+        const displayName = displayNameInput.value.trim();
+        if (!displayName) return;
+
+        goBtn.disabled = true;
+        goBtn.textContent = 'Saving…';
+
+        const { error } = await supabase
+            .from('profiles')
+            .update({ display_name: displayName, onboarding_complete: true })
+            .eq('id', session.user.id);
+
+        if (error) {
+            showError('error-msg', error.message);
+            goBtn.disabled = false;
+            goBtn.textContent = 'Go to my listings →';
+            return;
+        }
+
+        window.location.href = 'listings.html';
+    });
+</script>
+</body>
+</html>

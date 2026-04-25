@@ -1,0 +1,40 @@
+{
+  "id": "TASK-035",
+  "title": "Create siwe-nonce Supabase Edge Function",
+  "category": "api-endpoint",
+  "description": "Write and deploy the siwe-nonce Edge Function. It generates a random nonce, stores it in siwe_nonces with a 5-minute TTL, and returns the EIP-4361 formatted message for the wallet to sign.",
+  "dependencies": ["TASK-003"],
+  "complexity": "medium",
+  "acceptance_criteria": [
+    "Edge Function is deployed at /functions/v1/siwe-nonce",
+    "Accepts POST with body { address: string }",
+    "Validates that address is a valid Ethereum address (0x + 40 hex chars)",
+    "Generates a cryptographically random 16-byte nonce (hex string)",
+    "Inserts a row into siwe_nonces: { nonce, address, expires_at: now + 5min, used: false }",
+    "Returns { nonce, message } where message is EIP-4361 formatted",
+    "Returns 400 if address is missing or invalid",
+    "Returns 500 on database error"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Create supabase/functions/siwe-nonce/index.ts",
+      "details": "import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';\nimport { createClient } from 'https://esm.sh/@supabase/supabase-js@2';\n\nserve(async (req) => {\n  const { address } = await req.json();\n  if (!address || !/^0x[0-9a-fA-F]{40}$/.test(address)) {\n    return new Response('Invalid address', { status: 400 });\n  }\n  const nonce = crypto.randomUUID().replace(/-/g, '');\n  const expiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString();\n  const supabase = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);\n  const { error } = await supabase.from('siwe_nonces').insert({ nonce, address, expires_at: expiresAt });\n  if (error) return new Response('DB error', { status: 500 });\n  const message = buildSiweMessage(address, nonce);\n  return new Response(JSON.stringify({ nonce, message }), { headers: { 'Content-Type': 'application/json' } });\n});",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Implement buildSiweMessage",
+      "details": "function buildSiweMessage(address: string, nonce: string): string {\n  return [\n    'flatfinder.app wants you to sign in with your Ethereum account:',\n    address,\n    '',\n    'Sign in to FlatFinder.',\n    '',\n    'URI: https://flatfinder.app',\n    'Version: 1',\n    'Chain ID: 1',\n    'Nonce: ' + nonce,\n    'Issued At: ' + new Date().toISOString()\n  ].join('\\n');\n}",
+      "passes": false
+    },
+    {
+      "number": 3,
+      "description": "Deploy and test",
+      "details": "Run: supabase functions deploy siwe-nonce\nTest: curl -X POST https://[project].supabase.co/functions/v1/siwe-nonce -H 'Content-Type: application/json' -d '{\"address\":\"0xYourAddress\"}'\nExpect: { nonce: '...', message: '...' }",
+      "passes": false
+    }
+  ],
+  "technical_notes": "Uses SUPABASE_SERVICE_ROLE_KEY (not anon key) to bypass RLS and write to siwe_nonces. Never expose the service role key to the frontend.",
+  "passes": false
+}

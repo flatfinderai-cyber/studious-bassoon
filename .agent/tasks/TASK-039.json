@@ -1,0 +1,33 @@
+{
+  "id": "TASK-039",
+  "title": "Implement SIWE frontend flow (nonce → sign → verify)",
+  "category": "functional",
+  "description": "After the user connects their wallet via Web3Modal, automatically initiate the SIWE flow: fetch a nonce, ask the wallet to sign the message, send to siwe-verify, and navigate to the returned action link.",
+  "dependencies": ["TASK-037", "TASK-038", "TASK-035", "TASK-036"],
+  "complexity": "high",
+  "acceptance_criteria": [
+    "On wallet connection event, the SIWE flow starts automatically (no extra button click)",
+    "Calls POST /functions/v1/siwe-nonce with { address }",
+    "Prompts user to sign the returned message via their connected wallet",
+    "Calls POST /functions/v1/siwe-verify with { message, signature, address }",
+    "On success: navigates to the returned action_link URL (which goes to /auth/callback)",
+    "On user rejection of signature: shows 'Signature cancelled' message, does not redirect",
+    "On server error: shows 'Sign-in failed, please try again'"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Listen for wallet connection event",
+      "details": "import { watchAccount } from 'https://esm.sh/wagmi@1';\nwatchAccount(async (account) => { if (account.status === 'connected' && account.address) { await startSiweFlow(account.address); } });",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Implement startSiweFlow",
+      "details": "async function startSiweFlow(address) {\n  const res = await fetch('/functions/v1/siwe-nonce', { method: 'POST', body: JSON.stringify({ address }), headers: { 'Content-Type': 'application/json' } });\n  const { message } = await res.json();\n  let signature;\n  try {\n    const { signMessage } = await import('https://esm.sh/wagmi@1/actions');\n    signature = await signMessage({ message });\n  } catch (e) { showError('Signature cancelled'); return; }\n  const verifyRes = await fetch('/functions/v1/siwe-verify', { method: 'POST', body: JSON.stringify({ message, signature, address }), headers: { 'Content-Type': 'application/json' } });\n  if (!verifyRes.ok) { showError('Sign-in failed, please try again'); return; }\n  const { url } = await verifyRes.json();\n  window.location.href = url;\n}",
+      "passes": false
+    }
+  ],
+  "technical_notes": "The action_link returned from siwe-verify is a Supabase magic link URL. Navigating to it causes Supabase to fire onAuthStateChange on /auth/callback, completing the session establishment.",
+  "passes": false
+}

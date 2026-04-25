@@ -1,0 +1,48 @@
+{
+  "id": "TASK-015",
+  "title": "Implement email + password signUp call",
+  "category": "functional",
+  "description": "Wire the signup form submission to Supabase's signUp method, handle errors inline, and redirect to /verify-email on success.",
+  "dependencies": ["TASK-009", "TASK-011"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "Submitting the form calls supabase.auth.signUp({ email, password, options: { data: { full_name: name } } })",
+    "On success: stores email in sessionStorage, redirects to /verify-email?email=[email]",
+    "On error: displays the Supabase error message in the #error-msg element",
+    "Password validation (min 8 chars, 1 number) runs client-side before the API call",
+    "Submit button shows a loading state while the request is in flight"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Add form submit event listener",
+      "details": "document.getElementById('signup-form').addEventListener('submit', async (e) => { e.preventDefault(); ... });",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Validate password client-side",
+      "details": "if (!/[0-9]/.test(password) || password.length < 8) { showError('Password must be at least 8 characters and contain a number'); return; }",
+      "passes": false
+    },
+    {
+      "number": 3,
+      "description": "Call supabase.auth.signUp",
+      "details": "const { error } = await supabase.auth.signUp({ email, password, options: { data: { full_name: name } } }); if (error) { showError(error.message); return; }",
+      "passes": false
+    },
+    {
+      "number": 4,
+      "description": "On success redirect",
+      "details": "sessionStorage.setItem('pending_email', email); window.location.href = '/verify-email?email=' + encodeURIComponent(email);",
+      "passes": false
+    },
+    {
+      "number": 5,
+      "description": "Add loading state",
+      "details": "Set button textContent to 'Creating account…' and disabled = true before the await. Restore on error.",
+      "passes": false
+    }
+  ],
+  "passes": false
+}

@@ -1,0 +1,38 @@
+{
+  "id": "TASK-014",
+  "title": "Create /verify-email holding screen",
+  "category": "ui-ux",
+  "description": "Create verify-email.html — the page users see immediately after signing up. It reassures them a verification email is on its way and provides next-step guidance.",
+  "dependencies": ["TASK-010"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "verify-email.html exists",
+    "Page displays a mail/envelope icon or illustration",
+    "Heading reads 'Check your inbox'",
+    "Body copy reads: 'We've sent a verification link to [email]. Click the link to activate your account.'",
+    "The [email] placeholder is populated dynamically from the URL query param ?email= or sessionStorage",
+    "A 'Resend email' button is present (TASK-016 wires it up)",
+    "A 'Wrong email?' link navigates back to /signup"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Create verify-email.html with shared card layout",
+      "details": "Reuse the card container and CSS from signup.html. Add envelope SVG icon (inline or from /icons/).",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Populate email from URL/storage",
+      "details": "const params = new URLSearchParams(location.search);\nconst email = params.get('email') || sessionStorage.getItem('pending_email') || 'your inbox';\ndocument.getElementById('email-display').textContent = email;",
+      "passes": false
+    },
+    {
+      "number": 3,
+      "description": "Add Resend and Wrong email? links",
+      "details": "<button id='resend-btn'>Resend email</button>\n<a href='/signup'>Wrong email? Go back</a>",
+      "passes": false
+    }
+  ],
+  "passes": false
+}

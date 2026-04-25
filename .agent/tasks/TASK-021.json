@@ -1,0 +1,23 @@
+{
+  "id": "TASK-021",
+  "title": "Add magic link send form to /login",
+  "category": "ui-ux",
+  "description": "Add the magic link section to login.html — a toggle button that reveals an email field to send a sign-in link.",
+  "dependencies": ["TASK-020"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "Divider 'or' separates the password form and magic link section",
+    "Button 'Sign in without a password' toggles a magic link email form",
+    "Magic link form has an email input and 'Send link' button",
+    "IDs: magic-link-btn, magic-link-form, magic-email, send-magic-link-login"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Add magic link HTML (same pattern as /signup)",
+      "details": "Duplicate the structure from TASK-012 but change button label to 'Sign in without a password' and use id='send-magic-link-login' for the send button.",
+      "passes": false
+    }
+  ],
+  "passes": false
+}

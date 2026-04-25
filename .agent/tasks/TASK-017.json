@@ -1,0 +1,37 @@
+{
+  "id": "TASK-017",
+  "title": "Create /auth/callback page and token exchange handler",
+  "category": "functional",
+  "description": "Create auth-callback.html (served at /auth/callback). This page handles the URL fragment or query params from Supabase's email redirect, exchanges the tokens, and hands off to the routing logic in TASK-018.",
+  "dependencies": ["TASK-009"],
+  "complexity": "medium",
+  "acceptance_criteria": [
+    "A page exists at /auth/callback",
+    "On load, it calls supabase.auth.exchangeCodeForSession() (PKCE flow) or reads the fragment (implicit flow) — determined by Supabase client version",
+    "On success, the user's session is established in localStorage",
+    "On error (expired link, invalid token), page shows a friendly error and a link to /signup",
+    "Page shows a loading spinner while the exchange is in progress"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Create auth-callback.html",
+      "details": "Minimal page: shared card container, a spinner div, and an error div (hidden). Title: 'Signing you in…'",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Handle token exchange on load",
+      "details": "Supabase JS v2 handles the fragment/code automatically when the client is initialised. Listen for the auth state change: supabase.auth.onAuthStateChange((event, session) => { if (event === 'SIGNED_IN' && session) { handlePostAuth(session); } else if (event === 'TOKEN_REFRESHED') { handlePostAuth(session); } });",
+      "passes": false
+    },
+    {
+      "number": 3,
+      "description": "Handle exchange errors",
+      "details": "Also call: const { error } = await supabase.auth.getSession(); if (error || !session) { showError('This link has expired. Please sign up again.'); }",
+      "passes": false
+    }
+  ],
+  "technical_notes": "Supabase JS v2 automatically parses the URL hash/query on client init and fires onAuthStateChange. The /auth/callback page primarily needs to listen for that event rather than manually parse the URL.",
+  "passes": false
+}

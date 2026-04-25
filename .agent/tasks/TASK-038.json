@@ -1,0 +1,29 @@
+{
+  "id": "TASK-038",
+  "title": "Implement wallet connect UI trigger (open modal)",
+  "category": "ui-ux",
+  "description": "Replace the placeholder toast on the Connect Wallet buttons (signup and login) with the actual Web3Modal open call.",
+  "dependencies": ["TASK-037", "TASK-013", "TASK-022"],
+  "complexity": "low",
+  "acceptance_criteria": [
+    "Clicking 'Connect Wallet' on /signup opens the Web3Modal",
+    "Clicking 'Connect Wallet' on /login opens the Web3Modal",
+    "Modal displays MetaMask option and WalletConnect QR option",
+    "On wallet connection, the SIWE flow in TASK-039 is triggered automatically"
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "description": "Replace placeholder handler on /signup",
+      "details": "Replace the toast handler from TASK-013 with: import { modal } from './wallet-client.js'; document.getElementById('wallet-connect-btn').addEventListener('click', () => modal.open());",
+      "passes": false
+    },
+    {
+      "number": 2,
+      "description": "Replace placeholder handler on /login",
+      "details": "Same replacement for id='wallet-connect-btn-login'.",
+      "passes": false
+    }
+  ],
+  "passes": false
+}
