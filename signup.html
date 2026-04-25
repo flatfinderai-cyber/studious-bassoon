@@ -78,6 +78,7 @@
 <script type="module">
     import { supabase } from './supabase-client.js';
     import { showError, clearError, showToast } from './auth-utils.js';
+    import { siweSignIn } from './wallet-client.js';
 
     // ── Password form ──
     document.getElementById('signup-form').addEventListener('submit', async (e) => {
@@ -147,9 +148,21 @@
         window.location.href = 'verify-email.html?email=' + encodeURIComponent(email);
     });
 
-    // ── Wallet connect (placeholder — Phase 2) ──
-    document.getElementById('wallet-connect-btn').addEventListener('click', () => {
-        showToast('Wallet sign-in coming soon!');
+    // ── Wallet connect — full SIWE flow ──
+    const walletBtn = document.getElementById('wallet-connect-btn');
+    walletBtn.addEventListener('click', async () => {
+        clearError('error-msg');
+        walletBtn.disabled = true;
+        walletBtn.textContent = 'Connecting…';
+
+        await siweSignIn(
+            (msg) => {
+                showError('error-msg', msg);
+                walletBtn.disabled = false;
+                walletBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M9.58 11.5C13.13 7.97 18.87 7.97 22.42 11.5L22.87 11.95C23.05 12.13 23.05 12.42 22.87 12.6L21.44 14.03C21.35 14.12 21.2 14.12 21.11 14.03L20.49 13.41C18.05 10.97 14 10.97 11.56 13.41L10.89 14.08C10.8 14.17 10.65 14.17 10.56 14.08L9.13 12.65C8.95 12.47 8.95 12.18 9.13 12L9.58 11.5ZM25.37 14.45L26.64 15.72C26.82 15.9 26.82 16.19 26.64 16.37L20.77 22.24C20.59 22.42 20.3 22.42 20.12 22.24L16.09 18.21C16.04 18.17 15.97 18.17 15.92 18.21L11.89 22.24C11.71 22.42 11.42 22.42 11.24 22.24L5.37 16.37C5.19 16.19 5.19 15.9 5.37 15.72L6.64 14.45C6.82 14.27 7.11 14.27 7.29 14.45L11.32 18.48C11.37 18.53 11.44 18.53 11.49 18.48L15.52 14.45C15.7 14.27 15.99 14.27 16.17 14.45L20.2 18.48C20.25 18.53 20.32 18.53 20.37 18.48L24.4 14.45C24.58 14.27 24.88 14.27 25.37 14.45Z" fill="#3B99FC"/></svg> Connect Wallet`;
+            },
+            () => { walletBtn.textContent = 'Check your wallet…'; }
+        );
     });
 </script>
 </body>

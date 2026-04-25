@@ -21,6 +21,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS set_tenant_preferences_updated_at ON public.tenant_preferences;
 CREATE TRIGGER set_tenant_preferences_updated_at
     BEFORE UPDATE ON public.tenant_preferences
     FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();

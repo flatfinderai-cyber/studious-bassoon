@@ -29,10 +29,12 @@ CREATE TRIGGER on_auth_user_created
 -- ──────────────────────────────────────────────
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can view own profile" ON public.profiles;
 CREATE POLICY "Users can view own profile"
     ON public.profiles FOR SELECT
     USING (auth.uid() = id);
 
+DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
 CREATE POLICY "Users can update own profile"
     ON public.profiles FOR UPDATE
     USING (auth.uid() = id)
@@ -44,14 +46,17 @@ CREATE POLICY "Users can update own profile"
 -- ──────────────────────────────────────────────
 ALTER TABLE public.tenant_preferences ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Tenants can view own preferences" ON public.tenant_preferences;
 CREATE POLICY "Tenants can view own preferences"
     ON public.tenant_preferences FOR SELECT
     USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Tenants can insert own preferences" ON public.tenant_preferences;
 CREATE POLICY "Tenants can insert own preferences"
     ON public.tenant_preferences FOR INSERT
     WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Tenants can update own preferences" ON public.tenant_preferences;
 CREATE POLICY "Tenants can update own preferences"
     ON public.tenant_preferences FOR UPDATE
     USING (auth.uid() = user_id)
