@@ -3,7 +3,7 @@ import { supabase } from './supabase-client.js';
 export async function requireAuth() {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
-        window.location.href = '/login.html';
+        window.location.href = 'login.html';
         return null;
     }
     return session;
@@ -20,16 +20,16 @@ export async function handlePostLogin() {
         .single();
 
     if (!profile || !profile.onboarding_complete) {
-        window.location.href = '/onboarding-role.html';
+        window.location.href = 'onboarding-role.html';
         return;
     }
 
-    window.location.href = profile.role === 'landlord' ? '/listings.html' : '/search.html';
+    window.location.href = profile.role === 'landlord' ? 'listings.html' : 'search.html';
 }
 
 export async function logOut() {
     await supabase.auth.signOut();
-    window.location.href = '/index.html';
+    window.location.href = 'flatfinder-landing.html';
 }
 
 export function showToast(message, duration = 3000) {

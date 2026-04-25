@@ -7,6 +7,16 @@ const corsHeaders = {
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const ALLOWED_ORIGINS = new Set([
+    'https://flatfinder.app',
+    'https://www.flatfinder.app',
+]);
+
+function trustedOrigin(req: Request): string {
+    const o = req.headers.get('origin') ?? '';
+    return ALLOWED_ORIGINS.has(o) ? o : 'https://flatfinder.app';
+}
+
 serve(async (req: Request) => {
     if (req.method === 'OPTIONS') {
         return new Response('ok', { headers: corsHeaders });
@@ -108,7 +118,7 @@ serve(async (req: Request) => {
         const { data: linkData, error: linkErr } = await supabase.auth.admin.generateLink({
             type: 'magiclink',
             email: walletEmail,
-            options: { redirectTo: `${req.headers.get('origin') || 'https://flatfinder.app'}/auth-callback.html` },
+            options: { redirectTo: `${trustedOrigin(req)}/auth-callback.html` },
         });
 
         if (linkErr) throw linkErr;

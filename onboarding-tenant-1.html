@@ -57,16 +57,20 @@
     const nextBtn = document.getElementById('next-btn');
 
     function renderTags() {
-        tagsContainer.innerHTML = tags.map((t, i) =>
-            `<span class="tag">${t}<button type="button" aria-label="Remove ${t}" onclick="removeTag(${i})">×</button></span>`
-        ).join('');
+        tagsContainer.replaceChildren(...tags.map((t, i) => {
+            const span = document.createElement('span');
+            span.className = 'tag';
+            span.textContent = t;
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.setAttribute('aria-label', `Remove ${t}`);
+            btn.textContent = '×';
+            btn.addEventListener('click', () => { tags.splice(i, 1); renderTags(); });
+            span.appendChild(btn);
+            return span;
+        }));
         nextBtn.disabled = tags.length === 0;
     }
-
-    window.removeTag = (i) => {
-        tags.splice(i, 1);
-        renderTags();
-    };
 
     function addLocation() {
         const val = locationInput.value.trim();

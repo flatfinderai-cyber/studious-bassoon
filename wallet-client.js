@@ -1,8 +1,6 @@
 import { createWalletClient, custom } from 'https://esm.sh/viem@2';
 import { mainnet } from 'https://esm.sh/viem@2/chains';
-
-const SUPABASE_URL = 'https://ygdmttxegqiqzdiumaif.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnZG10dHhlZ3FpcXpkaXVtYWlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2MDczNTksImV4cCI6MjA4NzE4MzM1OX0.Rj09RopXbaKPg_ppJTZ0O5yn56ohstpbu8fKipcCIIU';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from './supabase-client.js';
 
 /**
  * Full SIWE sign-in flow:
