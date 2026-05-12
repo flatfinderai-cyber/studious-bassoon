@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Listings — FlatFinder™</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="auth.css">
+    <style>
+        .dashboard-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+            text-align: center;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+        .coming-soon-badge {
+            display: inline-block;
+            background: #fff3e0;
+            color: #f97316;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            margin-bottom: 1.25rem;
+        }
+        .user-info {
+            font-size: 0.875rem;
+            color: #888;
+            margin: 1rem 0 1.5rem;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="flatfinder-landing.html" class="logo">
+        <span class="logo-cat">🐱</span>
+        <span>FlatFinder™</span>
+    </a>
+</header>
+
+<div class="auth-wrapper">
+    <div class="dashboard-card">
+        <div class="coming-soon-badge">Coming soon</div>
+        <div style="font-size:3rem;margin-bottom:1rem;">🏠</div>
+        <h1 style="font-size:1.5rem;margin-bottom:0.5rem;">Landlord portal is on its way</h1>
+        <p class="subtitle">Your account is verified and ready. The full listings portal launches August 2026.</p>
+        <p class="user-info" id="user-info"></p>
+        <button class="btn btn-outline" id="logout-btn" style="margin-top:0.5rem;">Sign out</button>
+    </div>
+</div>
+
+<footer>
+    <p>© 2024–2026 FlatFinder™: Housing Revolutionised™</p>
+</footer>
+
+<script type="module">
+    import { logOut, requireAuth } from './auth-utils.js';
+
+    const session = await requireAuth();
+    if (!session) throw new Error('Not authenticated');
+
+    const email = session.user.email || '';
+    const walletEmail = email.endsWith('@wallet.flatfinder.app');
+    const display = walletEmail
+        ? 'Wallet: ' + email.replace('@wallet.flatfinder.app', '')
+        : email;
+    document.getElementById('user-info').textContent = 'Signed in as ' + display;
+
+    document.getElementById('logout-btn').addEventListener('click', () => logOut());
+</script>
+</body>
+</html>
