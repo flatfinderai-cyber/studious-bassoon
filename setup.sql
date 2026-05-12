@@ -54,6 +54,10 @@ CREATE TABLE IF NOT EXISTS public.siwe_nonces (
 
 CREATE INDEX IF NOT EXISTS idx_siwe_nonces_expires ON public.siwe_nonces(expires_at);
 
+-- siwe_nonces is accessed only via service-role key in Edge Functions.
+-- Deny all access to regular (anon/authenticated) roles.
+ALTER TABLE public.siwe_nonces ENABLE ROW LEVEL SECURITY;
+
 -- ──────────────────────────────────────────────
 -- 4. Trigger: create profile row on new sign-up
 -- ──────────────────────────────────────────────
